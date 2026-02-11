@@ -44,7 +44,7 @@ export const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => setIsAddingUser(true)}
-                className="bg-[#0f172a] text-white px-4 py-2.5 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center space-x-2 hover:opacity-90 transition-all shadow-lg active:scale-95"
+                className="bg-primary text-white px-4 py-2.5 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center space-x-2 hover:opacity-90 transition-all shadow-lg active:scale-95"
               >
                 <IconRenderer name="Plus" className="w-3.5 h-3.5" />
                 <span>Novo Usuário</span>

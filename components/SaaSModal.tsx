@@ -190,7 +190,7 @@ export const SaaSModal: React.FC<SaaSModalProps> = ({ isOpen, onClose, onSave, i
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="text-[10px] font-black uppercase tracking-widest bg-slate-900 text-white px-4 py-2.5 rounded-lg hover:bg-slate-800 transition-all w-full shadow-md active:scale-95"
+                  className="text-[10px] font-black uppercase tracking-widest bg-primary text-white px-4 py-2.5 rounded-lg hover:opacity-90 transition-all w-full shadow-md active:scale-95"
                 >
                   Upload Imagem
                 </button>
@@ -223,7 +223,7 @@ export const SaaSModal: React.FC<SaaSModalProps> = ({ isOpen, onClose, onSave, i
                     key={iconName}
                     type="button"
                     onClick={() => setFormData({ ...formData, icon: iconName })}
-                    className={`p-2.5 flex items-center justify-center rounded-lg transition-all ${formData.icon === iconName ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' : 'bg-white text-slate-400 hover:text-slate-600 border border-slate-100 hover:border-slate-300'}`}
+                    className={`p-2.5 flex items-center justify-center rounded-lg transition-all ${formData.icon === iconName ? 'bg-primary text-white shadow-lg shadow-blue-500/30' : 'bg-white text-slate-400 hover:text-slate-600 border border-slate-100 hover:border-slate-300'}`}
                   >
                     <IconRenderer name={iconName} className="w-5 h-5" />
                   </button>
@@ -253,7 +253,7 @@ export const SaaSModal: React.FC<SaaSModalProps> = ({ isOpen, onClose, onSave, i
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-3.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-xl shadow-blue-500/20 transition-all text-xs uppercase tracking-widest active:scale-95"
+              className="flex-1 px-4 py-3.5 bg-primary text-white font-bold rounded-xl hover:opacity-95 shadow-xl transition-all text-xs uppercase tracking-widest active:scale-95"
             >
               {initialData ? 'Salvar' : 'Adicionar'}
             </button>

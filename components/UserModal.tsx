@@ -20,6 +20,7 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
     role: 'Usuário',
     isActive: true,
     avatarUrl: '',
+    primaryColor: '#0f172a',
     allowedApps: [],
     password: '',
     confirmPassword: ''
@@ -38,6 +39,7 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
         role: initialData.role,
         isActive: initialData.isActive !== undefined ? initialData.isActive : true,
         avatarUrl: initialData.avatarUrl || '',
+        primaryColor: initialData.primaryColor || '#0f172a',
         allowedApps: initialData.allowedApps || []
       });
       setShowPasswordFields(false);
@@ -48,6 +50,7 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
         role: 'Usuário',
         isActive: true,
         avatarUrl: '',
+        primaryColor: '#0f172a',
         allowedApps: [],
         password: '',
         confirmPassword: ''
@@ -109,7 +112,8 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
     const userData: User = {
       ...cleanData as User,
       id: initialData ? initialData.id : Math.random().toString(36).substr(2, 9),
-      avatarUrl: formData.avatarUrl || `https://i.pravatar.cc/150?u=${formData.email || Date.now()}`
+      avatarUrl: formData.avatarUrl || `https://i.pravatar.cc/150?u=${formData.email || Date.now()}`,
+      primaryColor: formData.primaryColor
     };
     onSave(userData, passwordToSave);
     onClose();
@@ -288,6 +292,40 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
           </div>
 
           <div className="pt-4">
+            <label className="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3 ml-1">Cor Personalizada dos Botões</label>
+            <div className="grid grid-cols-6 gap-2 mb-6 p-1">
+              {[
+                { name: 'Navy', color: '#0f172a' },
+                { name: 'Azul', color: '#2563eb' },
+                { name: 'Roxo', color: '#7c3aed' },
+                { name: 'Rosa', color: '#db2777' },
+                { name: 'Vermelho', color: '#dc2626' },
+                { name: 'Verde Print', color: '#82e622' },
+                { name: 'Laranja Print', color: '#ff4d00' },
+                { name: 'Amarelo Print', color: '#ffc400' },
+                { name: 'Emerald', color: '#10b981' },
+                { name: 'Indigo', color: '#4f46e5' },
+                { name: 'Slate', color: '#475569' },
+                { name: 'Rose', color: '#e11d48' },
+              ].map((c) => (
+                <button
+                  key={c.color}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, primaryColor: c.color })}
+                  className={`group relative w-10 h-10 rounded-xl transition-all active:scale-90 flex items-center justify-center ${formData.primaryColor === c.color ? 'ring-2 ring-primary ring-offset-2' : 'hover:scale-110 shadow-sm'}`}
+                  style={{ backgroundColor: c.color }}
+                  title={c.name}
+                >
+                  {formData.primaryColor === c.color && (
+                    <IconRenderer name="Check" className="w-4 h-4 text-white drop-shadow-md" />
+                  )}
+                  <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                    {c.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+
             <label className="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3 ml-1">Aplicativos Permitidos</label>
             <div className="space-y-2 max-h-48 overflow-y-auto p-1 custom-scrollbar">
               {apps.map(app => {
@@ -326,7 +364,8 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
           <button
             type="submit"
             onClick={handleSubmit}
-            className="flex-1 px-4 py-3.5 bg-[#0f172a] text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:opacity-95 shadow-xl transition-all active:scale-95"
+            className="flex-1 px-4 py-3.5 text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:opacity-95 shadow-xl transition-all active:scale-95 bg-primary"
+            style={{ backgroundColor: formData.primaryColor }}
           >
             {initialData ? 'Salvar Alterações' : 'Criar Conta'}
           </button>

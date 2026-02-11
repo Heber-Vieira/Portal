@@ -56,7 +56,9 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="max-w-[1800px] mx-auto px-4 h-12 flex items-center justify-between gap-4">
                 <div className="flex items-center space-x-6">
                     <div className="flex items-center space-x-2 group cursor-pointer" onClick={onLogoClick}>
-                        <div className="w-7 h-7 bg-[#0f172a] rounded flex items-center justify-center text-white transition-transform group-hover:scale-105 border border-white/10">
+                        <div
+                            className="w-7 h-7 rounded flex items-center justify-center text-white transition-transform group-hover:scale-105 border border-white/10 bg-primary"
+                        >
                             <IconRenderer name="Layers" className="w-3.5 h-3.5" />
                         </div>
                         <h1 className="text-xs font-black tracking-tighter uppercase">Nexus<span className="text-blue-500">Pro</span></h1>
@@ -87,7 +89,12 @@ export const Header: React.FC<HeaderProps> = ({
                             <button onClick={() => setShowManageUsersModal(true)} className="p-1.5 text-slate-400 hover:text-blue-500 transition-colors" title="Gerenciar Usuários">
                                 <IconRenderer name="User" className="w-3.5 h-3.5" />
                             </button>
-                            <button onClick={() => setShowStats(!showStats)} className={`p-1.5 rounded transition-colors ${showStats ? (isDarkMode ? 'bg-blue-600' : 'bg-[#0f172a]') + ' text-white' : 'text-slate-400 hover:text-slate-300'}`}><IconRenderer name="BarChart3" className="w-3.5 h-3.5" /></button>
+                            <button
+                                onClick={() => setShowStats(!showStats)}
+                                className={`p-1.5 rounded transition-colors ${showStats ? 'text-white bg-primary' : 'text-slate-400 hover:text-slate-300'}`}
+                            >
+                                <IconRenderer name="BarChart3" className="w-3.5 h-3.5" />
+                            </button>
                         </>
                     )}
                     <button onClick={() => setShowNotifications(!showNotifications)} className="p-1.5 text-slate-400 hover:text-slate-300 relative">

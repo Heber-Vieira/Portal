@@ -12,6 +12,7 @@ export interface User {
   allowedApps?: string[]; // IDs dos sistemas que o usuário pode visualizar
   canViewStats?: boolean; // Permissão para ver o dashboard de estatísticas
   isActive?: boolean;
+  primaryColor?: string;
 }
 
 export interface Category {

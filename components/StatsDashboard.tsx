@@ -48,7 +48,7 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ data, totalSyste
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         {/* Card 1: Total Interactions */}
         <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100 flex items-center space-x-4">
-          <div className="w-14 h-14 bg-[#0f172a] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-slate-900/20">
+          <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg">
             <IconRenderer name="Activity" className="w-6 h-6" />
           </div>
           <div>
@@ -59,7 +59,7 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ data, totalSyste
 
         {/* Card 2: Active Systems */}
         <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100 flex items-center space-x-4">
-          <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
+          <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg">
             <IconRenderer name="Layers" className="w-6 h-6" />
           </div>
           <div>
@@ -111,7 +111,7 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ data, totalSyste
                   <div className="flex-1 mx-4">
                     <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-blue-600 rounded-full transition-all duration-1000 ease-out"
+                        className="h-full bg-primary rounded-full transition-all duration-1000 ease-out"
                         style={{ width: `${(stat.totalAccesses / maxAccesses) * 100}%` }}
                       />
                     </div>
@@ -143,7 +143,7 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ data, totalSyste
                                   </div>
                                   <span className="text-xs font-bold text-slate-700 truncate max-w-[100px]">{sys.systemName}</span>
                                 </div>
-                                <span className="bg-blue-50 text-blue-600 text-[9px] font-black px-1.5 py-0.5 rounded uppercase">{sys.totalClicks}x</span>
+                                <span className="bg-primary/10 text-primary text-[9px] font-black px-1.5 py-0.5 rounded uppercase">{sys.totalClicks}x</span>
                               </div>
                               <div className="border-t border-slate-50 pt-2 mt-2">
                                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wide mb-1">Histórico de Acessos</p>

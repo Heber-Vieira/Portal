@@ -99,7 +99,7 @@ export const HelpCenter: React.FC<HelpCenterProps> = ({ isOpen, onClose, isDarkM
                 {/* Header Section */}
                 <div className={`px-8 py-8 border-b ${isDarkMode ? 'border-white/5' : 'border-slate-50'} flex justify-between items-center shrink-0`}>
                     <div className="flex items-center space-x-4">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-xl ${isDarkMode ? 'bg-blue-600 shadow-blue-600/20' : 'bg-[#0f172a] shadow-black/10'}`}>
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-xl bg-primary`}>
                             <IconRenderer name="LifeBuoy" className="w-6 h-6 text-white" />
                         </div>
                         <div>
@@ -138,7 +138,7 @@ export const HelpCenter: React.FC<HelpCenterProps> = ({ isOpen, onClose, isDarkM
                                 className={`
                                     flex-1 md:flex-none flex items-center md:space-x-4 p-4 rounded-2xl transition-all duration-300 group
                                     ${activeTab === tab.id
-                                        ? (isDarkMode ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 scale-102' : 'bg-[#0f172a] text-white shadow-xl scale-102')
+                                        ? 'bg-primary text-white shadow-lg scale-102'
                                         : (isDarkMode ? 'text-slate-400 hover:bg-white/5' : 'text-slate-500 hover:bg-white hover:shadow-sm')
                                     }
                                 `}
@@ -159,7 +159,7 @@ export const HelpCenter: React.FC<HelpCenterProps> = ({ isOpen, onClose, isDarkM
                                     <div className="flex flex-col h-full space-y-6">
                                         <button
                                             onClick={() => setSelectedDoc(null)}
-                                            className="flex items-center space-x-2 text-[10px] font-black uppercase text-blue-500 tracking-widest hover:translate-x-[-4px] transition-transform"
+                                            className="flex items-center space-x-2 text-[10px] font-black uppercase text-primary tracking-widest hover:translate-x-[-4px] transition-transform"
                                         >
                                             <IconRenderer name="ChevronRight" className="w-3 h-3 rotate-180" />
                                             <span>Voltar para Lista</span>
@@ -180,14 +180,14 @@ export const HelpCenter: React.FC<HelpCenterProps> = ({ isOpen, onClose, isDarkM
                                 ) : (
                                     <>
                                         <div className="relative mb-8 group">
-                                            <IconRenderer name="Search" className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+                                            <IconRenderer name="Search" className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
                                             <input
                                                 value={searchQuery}
                                                 onChange={(e) => setSearchQuery(e.target.value)}
                                                 placeholder="BUSCAR NO CENTRO DE INTELIGÊNCIA..."
                                                 className={`
                                                     w-full pl-16 pr-8 py-5 rounded-2xl border-none outline-none transition-all text-xs font-black uppercase tracking-widest
-                                                    ${isDarkMode ? 'bg-white/5 text-white focus:bg-white/10 ring-1 ring-white/5 focus:ring-blue-600/50' : 'bg-slate-50 text-slate-900 focus:bg-white ring-1 ring-slate-100 focus:ring-slate-900 focus:shadow-2xl'}
+                                                    ${isDarkMode ? 'bg-white/5 text-white focus:bg-white/10 ring-1 ring-white/5 focus:ring-primary/50' : 'bg-slate-50 text-slate-900 focus:bg-white ring-1 ring-slate-100 focus:ring-primary focus:shadow-2xl'}
                                                 `}
                                             />
                                         </div>
@@ -203,11 +203,11 @@ export const HelpCenter: React.FC<HelpCenterProps> = ({ isOpen, onClose, isDarkM
                                                         `}
                                                         style={{ animationDelay: `${i * 50}ms` }}
                                                     >
-                                                        <div className={`w-12 h-12 shrink-0 rounded-2xl flex items-center justify-center transition-all duration-300 ${isDarkMode ? 'bg-white/5 text-slate-400 group-hover:bg-blue-600 group-hover:text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-[#0f172a] group-hover:text-white'}`}>
+                                                        <div className={`w-12 h-12 shrink-0 rounded-2xl flex items-center justify-center transition-all duration-300 ${isDarkMode ? 'bg-white/5 text-slate-400 group-hover:bg-primary group-hover:text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-primary group-hover:text-white'}`}>
                                                             <IconRenderer name={doc.icon} className="w-5 h-5" />
                                                         </div>
                                                         <div className="ml-5 flex-1 pr-4">
-                                                            <p className="text-[9px] font-black text-blue-500 uppercase tracking-widest mb-1">{doc.cat}</p>
+                                                            <p className="text-[9px] font-black text-primary uppercase tracking-widest mb-1">{doc.cat}</p>
                                                             <p className={`text-sm font-black uppercase tracking-tight leading-tight mb-2 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{doc.title}</p>
                                                             <div className="flex items-center space-x-1 text-[8px] font-bold text-slate-500 uppercase">
                                                                 <span>Ler Artigo</span>
@@ -230,7 +230,7 @@ export const HelpCenter: React.FC<HelpCenterProps> = ({ isOpen, onClose, isDarkM
                                 <div className="space-y-4">
                                     {faqs.map((faq, i) => (
                                         <div key={i} className={`p-6 rounded-3xl border ${isDarkMode ? 'bg-white/5 border-white/5' : 'bg-slate-50 border-slate-100'}`}>
-                                            <p className={`text-xs font-black uppercase tracking-widest mb-3 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>{faq.q}</p>
+                                            <p className={`text-xs font-black uppercase tracking-widest mb-3 text-primary`}>{faq.q}</p>
                                             <p className={`text-sm font-medium leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>{faq.a}</p>
                                         </div>
                                     ))}
@@ -261,7 +261,7 @@ export const HelpCenter: React.FC<HelpCenterProps> = ({ isOpen, onClose, isDarkM
                                 ) : (
                                     <form onSubmit={handleSupportSubmit} className="space-y-6">
                                         <div className="flex flex-col md:flex-row gap-6">
-                                            <div className={`flex-1 p-6 rounded-3xl border ${isDarkMode ? 'bg-blue-600/10 border-blue-600/20 text-blue-400' : 'bg-blue-50 border-blue-100 text-blue-600'}`}>
+                                            <div className={`flex-1 p-6 rounded-3xl border bg-primary/10 border-primary/20 text-primary`}>
                                                 <p className="text-[10px] font-black uppercase tracking-widest mb-1">Central de Ajuda</p>
                                                 <p className="text-sm font-bold leading-tight">Canal prioritário para incidentes operacionais.</p>
                                             </div>
@@ -300,8 +300,7 @@ export const HelpCenter: React.FC<HelpCenterProps> = ({ isOpen, onClose, isDarkM
                                             type="submit"
                                             disabled={isSubmitting}
                                             className={`
-                                                w-full py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] flex items-center justify-center space-x-3 transition-all active:scale-95 shadow-2xl
-                                                ${isDarkMode ? 'bg-blue-600 text-white shadow-blue-600/20' : 'bg-[#0f172a] text-white shadow-black/20'}
+                                                w-full py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] flex items-center justify-center space-x-3 transition-all active:scale-95 shadow-2xl bg-primary text-white
                                                 ${isSubmitting ? 'opacity-50 pointer-events-none' : 'hover:opacity-90'}
                                             `}
                                         >

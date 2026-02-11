@@ -63,7 +63,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onShowMessage }) =
 
             <div className="w-full max-w-md relative z-10">
                 <div className="text-center mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-600/20">
+                    <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
                         <IconRenderer name="Layers" className="w-8 h-8 text-white" />
                     </div>
                     <h1 className="text-3xl font-black text-white tracking-tighter uppercase">
@@ -135,7 +135,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onShowMessage }) =
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-black py-4 rounded-2xl text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 shadow-lg shadow-blue-600/20 flex items-center justify-center space-x-2 mt-8"
+                            className="w-full bg-primary hover:opacity-90 disabled:opacity-50 text-white font-black py-4 rounded-2xl text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 shadow-lg flex items-center justify-center space-x-2 mt-8"
                         >
                             {loading ? (
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

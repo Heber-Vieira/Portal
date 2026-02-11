@@ -72,7 +72,7 @@ export const SettingsModal: React.FC<ModalProps & {
 
                 <button
                     onClick={onClose}
-                    className={`mt-10 w-full py-4 text-white rounded-2xl font-black text-[9px] uppercase tracking-[0.2em] shadow-xl hover:opacity-90 active:scale-95 transition-all border border-white/10 ${isDarkMode ? 'bg-blue-600 shadow-blue-600/20' : 'bg-[#0f172a]'}`}
+                    className={`mt-10 w-full py-4 text-white rounded-2xl font-black text-[9px] uppercase tracking-[0.2em] shadow-xl hover:opacity-90 active:scale-95 transition-all border border-white/10 bg-primary`}
                 >
                     Salvar Preferências
                 </button>
@@ -173,7 +173,7 @@ export const SupportModal: React.FC<ModalProps> = ({ isOpen, onClose, isDarkMode
     return (
         <div className="fixed inset-0 z-[80] flex items-center justify-end p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
             <div className="bg-white w-full max-w-sm h-full max-h-[600px] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-500">
-                <div className="p-6 bg-[#0f172a] text-white flex justify-between items-center shrink-0">
+                <div className="p-6 bg-primary text-white flex justify-between items-center shrink-0">
                     <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center shadow-lg">
                             <IconRenderer name="LifeBuoy" className="w-6 h-6" />
@@ -229,7 +229,7 @@ export const SupportModal: React.FC<ModalProps> = ({ isOpen, onClose, isDarkMode
                         <button
                             onClick={handleSend}
                             disabled={isSubmitting}
-                            className={`flex-[2] py-3.5 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest hover:opacity-90 transition-all flex items-center justify-center space-x-2 active:scale-95 shadow-lg ${isDarkMode ? 'bg-blue-600 shadow-blue-600/20' : 'bg-[#0f172a]'} ${isSubmitting ? 'opacity-50 pointer-events-none' : ''}`}
+                            className={`flex-[2] py-3.5 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest hover:opacity-90 transition-all flex items-center justify-center space-x-2 active:scale-95 shadow-lg bg-primary ${isSubmitting ? 'opacity-50 pointer-events-none' : ''}`}
                         >
                             {isSubmitting ? (
                                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -292,7 +292,7 @@ export const SLAModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                     <span className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em]">Todos os sistemas operacionais</span>
                 </div>
 
-                <button onClick={onClose} className="mt-8 w-full py-4 bg-[#0f172a] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-slate-900/10 hover:scale-[1.02] active:scale-95 transition-all">Fechar Painel</button>
+                <button onClick={onClose} className="mt-8 w-full py-4 bg-primary text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-slate-900/10 hover:scale-[1.02] active:scale-95 transition-all">Fechar Painel</button>
             </div>
         </div>
     );
@@ -377,22 +377,46 @@ export const ProfileModal: React.FC<{
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{currentUser.role}</p>
                 </div>
                 <div className="space-y-4">
-                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-left">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">E-mail Corporativo</p>
                         <p className="text-sm font-bold text-slate-700">{currentUser.email}</p>
                     </div>
-                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex items-center justify-between">
-                        <div>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</p>
-                            <div className="flex items-center space-x-2">
-                                <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                                <p className="text-sm font-bold text-slate-700 uppercase">Ativo</p>
-                            </div>
-                        </div>
-                        <IconRenderer name="Check" className="w-5 h-5 text-emerald-500" />
+                </div>
+
+                <div className="mt-6">
+                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3 ml-1">Sua Cor Preferida</p>
+                    <div className="grid grid-cols-6 gap-2 p-1">
+                        {[
+                            { name: 'Navy', color: '#0f172a' },
+                            { name: 'Azul', color: '#2563eb' },
+                            { name: 'Roxo', color: '#7c3aed' },
+                            { name: 'Rosa', color: '#db2777' },
+                            { name: 'Vermelho', color: '#dc2626' },
+                            { name: 'Verde Print', color: '#82e622' },
+                            { name: 'Laranja Print', color: '#ff4d00' },
+                            { name: 'Amarelo Print', color: '#ffc400' },
+                            { name: 'Emerald', color: '#10b981' },
+                            { name: 'Indigo', color: '#4f46e5' },
+                            { name: 'Slate', color: '#475569' },
+                            { name: 'Rose', color: '#e11d48' },
+                        ].map((c) => (
+                            <button
+                                key={c.color}
+                                type="button"
+                                onClick={() => onUpdateUser?.({ ...currentUser, primaryColor: c.color })}
+                                className={`group relative w-full aspect-square rounded-xl transition-all active:scale-90 flex items-center justify-center ${currentUser.primaryColor === c.color ? 'ring-2 ring-primary ring-offset-2' : 'hover:scale-105 shadow-sm'}`}
+                                style={{ backgroundColor: c.color }}
+                                title={c.name}
+                            >
+                                {currentUser.primaryColor === c.color && (
+                                    <IconRenderer name="Check" className="w-4 h-4 text-white drop-shadow-md" />
+                                )}
+                            </button>
+                        ))}
                     </div>
                 </div>
-                <button onClick={onClose} className="mt-8 w-full py-4 bg-[#0f172a] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:opacity-90 active:scale-95 transition-all">Fechar</button>
+
+                <button onClick={onClose} className="mt-8 w-full py-4 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:opacity-90 active:scale-95 transition-all bg-primary">Fechar</button>
             </div>
         </div>
     );

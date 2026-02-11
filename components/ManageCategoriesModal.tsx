@@ -91,7 +91,7 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
               />
               <button
                 type="submit"
-                className="bg-slate-900 text-white p-4 rounded-xl hover:bg-slate-800 transition-all shadow-lg active:scale-95"
+                className="bg-primary text-white p-4 rounded-xl hover:opacity-90 transition-all shadow-lg active:scale-95"
               >
                 <IconRenderer name="Plus" className="w-5 h-5" />
               </button>
@@ -193,7 +193,7 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
                   }, 800);
                 }
               }}
-              className="flex-[2] px-4 py-3.5 bg-[#0f172a] text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-xl hover:opacity-90 transition-all shadow-lg active:scale-95 flex items-center justify-center space-x-2"
+              className="flex-[2] px-4 py-3.5 bg-primary text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-xl hover:opacity-90 transition-all shadow-lg active:scale-95 flex items-center justify-center space-x-2"
             >
               {isSaving ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

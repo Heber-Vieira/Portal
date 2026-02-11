@@ -63,7 +63,8 @@ const App: React.FC = () => {
           role: profile.role as any,
           avatarUrl: profile.avatar_url,
           isActive: profile.is_active,
-          allowedApps: profile.allowed_apps || []
+          allowedApps: profile.allowed_apps || [],
+          primaryColor: profile.primary_color || '#0f172a'
         };
         setCurrentUser(userObj);
         if (profile.is_dark_mode !== undefined) setIsDarkMode(profile.is_dark_mode);
@@ -81,7 +82,8 @@ const App: React.FC = () => {
               role: u.role as any,
               avatarUrl: u.avatar_url,
               isActive: u.is_active,
-              allowedApps: u.allowed_apps || []
+              allowedApps: u.allowed_apps || [],
+              primaryColor: u.primary_color || '#0f172a'
             })));
           }
         }
@@ -168,8 +170,9 @@ const App: React.FC = () => {
 
   const currentYear = new Date().getFullYear();
 
-  // Apply Dark Mode
+  // Apply Global Theme Settings
   useEffect(() => {
+    // Apply Dark Mode
     if (isDarkMode) {
       document.body.classList.add('dark-theme');
       document.documentElement.style.setProperty('--bg-main', '#0f172a');
@@ -179,7 +182,14 @@ const App: React.FC = () => {
       document.documentElement.style.setProperty('--bg-main', '#fcfdfe');
       document.documentElement.style.setProperty('--text-main', '#0f172a');
     }
-  }, [isDarkMode]);
+
+    // Apply Primary Color
+    const primaryColor = currentUser.primaryColor || '#0f172a';
+    document.documentElement.style.setProperty('--primary-color', primaryColor);
+
+    // Generate sub-colors (hover states, etc)
+    document.documentElement.style.setProperty('--primary-color-hover', primaryColor + 'ee');
+  }, [isDarkMode, currentUser.primaryColor]);
 
   const handleTogglePin = async (id: string) => {
     const link = links.find(l => l.id === id);
@@ -310,7 +320,8 @@ const App: React.FC = () => {
         role: user.role,
         is_active: user.isActive,
         avatar_url: user.avatarUrl,
-        allowed_apps: user.allowedApps
+        allowed_apps: user.allowedApps,
+        primary_color: user.primaryColor
       }).eq('id', user.id);
 
       if (profileError) throw profileError;
@@ -528,7 +539,7 @@ const App: React.FC = () => {
               {isAdmin && (
                 <button
                   onClick={() => { setEditingSaaS(null); setShowAddEditModal(true); }}
-                  className={`px-4 py-2 text-white font-black text-[9px] uppercase tracking-widest rounded transition-all flex items-center space-x-2 active:scale-95 shadow-lg ${isDarkMode ? 'bg-blue-600 shadow-blue-600/20' : 'bg-[#0f172a] shadow-black/10 hover:opacity-95'}`}
+                  className={`px-4 py-2 text-white font-black text-[9px] uppercase tracking-widest rounded transition-all flex items-center space-x-2 active:scale-95 shadow-lg bg-primary ${isDarkMode ? 'opacity-90 shadow-blue-600/10' : 'shadow-black/10 hover:opacity-95'}`}
                 >
                   <IconRenderer name="Plus" className="w-3 h-3" />
                   <span>Novo</span>

@@ -16,7 +16,7 @@ export const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose, tit
     const getColors = () => {
         switch (type) {
             case 'error': return { bg: 'bg-red-50', text: 'text-red-500', border: 'border-red-50/50', btn: 'bg-red-600 hover:bg-red-700 shadow-red-500/30' };
-            case 'info': return { bg: 'bg-blue-50', text: 'text-blue-500', border: 'border-blue-50/50', btn: 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/30' };
+            case 'info': return { bg: 'bg-blue-50', text: 'text-blue-500', border: 'border-blue-50/50', btn: 'bg-primary hover:opacity-90 shadow-blue-500/30' };
             default: return { bg: 'bg-amber-50', text: 'text-amber-500', border: 'border-amber-50/50', btn: 'bg-amber-500 hover:bg-amber-600 shadow-amber-500/30' };
         }
     };

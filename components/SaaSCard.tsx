@@ -22,7 +22,7 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
           ? 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10'
           : 'bg-white border-slate-100 hover:shadow-xl hover:shadow-slate-200/50'
         } ${saas.isPinned
-          ? (isDarkMode ? 'ring-1 ring-blue-500' : 'ring-1 ring-slate-900 border-slate-900 shadow-sm bg-slate-50/20')
+          ? (isDarkMode ? 'ring-1 border-primary ring-primary' : 'ring-1 border-primary ring-primary shadow-sm bg-slate-50/20')
           : ''
         }`}
     >
@@ -42,8 +42,8 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
         <button
           onClick={() => onTogglePin(saas.id)}
           className={`p-1.5 rounded-lg transition-all ${saas.isPinned
-            ? (isDarkMode ? 'text-blue-400 bg-white/10 shadow-lg' : 'text-slate-900 bg-white shadow-md border border-slate-100')
-            : 'text-slate-400 opacity-0 group-hover:opacity-100 hover:text-blue-500 bg-white/90 dark:bg-slate-800/90 border border-slate-100 dark:border-white/5'
+            ? 'text-primary bg-white shadow-md border border-slate-100'
+            : 'text-slate-400 opacity-0 group-hover:opacity-100 hover:text-primary bg-white/90 dark:bg-slate-800/90 border border-slate-100 dark:border-white/5'
             }`}
           title={saas.isPinned ? "Desfavoritar" : "Favoritar"}
         >
@@ -79,7 +79,6 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
         <p className={`text-slate-400 font-medium leading-tight ${isDense ? 'text-[8px]' : 'text-[10px]'}`}>
           {saas.description}
         </p>
-
         <div className="flex flex-wrap gap-2 mt-2">
           {!saas.isActive && (
             <div className="text-[7px] font-black uppercase tracking-[0.2em] text-red-500 flex items-center space-x-1 animate-pulse">
@@ -104,7 +103,7 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => onAccess(saas.id)}
-            className={`w-full text-white rounded-lg font-black text-[9px] uppercase tracking-widest flex items-center justify-center space-x-2 transition-all hover:opacity-90 active:scale-95 shadow-lg ${isDarkMode ? 'bg-blue-600 shadow-blue-600/20' : 'bg-[#0f172a] shadow-black/10'} ${isDense ? 'py-1.5' : 'py-2.5'}`}
+            className={`w-full text-white rounded-lg font-black text-[9px] uppercase tracking-widest flex items-center justify-center space-x-2 transition-all hover:opacity-90 active:scale-95 shadow-lg bg-primary ${isDense ? 'py-1.5' : 'py-2.5'}`}
           >
             <span>Acessar</span>
             <IconRenderer name="ExternalLink" className="w-2.5 h-2.5 opacity-60" />
