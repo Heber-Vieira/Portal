@@ -290,22 +290,39 @@ const App: React.FC = () => {
       if (password) {
         // Criar usuário no Supabase Auth
         // Isso vai disparar a trigger on_auth_user_created para criar o perfil
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: user.email,
           password: password,
           options: {
             data: {
               full_name: user.name,
               role: user.role,
-              allowed_apps: user.allowedApps
+              allowed_apps: user.allowedApps,
+              avatar_url: user.avatarUrl,
+              primary_color: user.primaryColor
             }
           }
         });
         if (error) throw error;
-        showMessage(`Solicitação de criação enviada para ${user.email}. O usuário deve confirmar o e-mail.`, 'Conta Criada', 'info');
+
+        // Se o usuário foi criado com sucesso, atualizar o ID local com o UUID do Supabase
+        if (data.user) {
+          const newUser = { ...user, id: data.user.id };
+
+          // Atualização explícita no perfil para garantir que campos extras (foto, cor) sejam salvos
+          // já que triggers as vezes só pegam o básico do metadata
+          await supabase.from('profiles').update({
+            avatar_url: user.avatarUrl,
+            primary_color: user.primaryColor
+          }).eq('id', data.user.id);
+
+          setUsers(prev => [...prev.filter(u => u.id !== user.id), newUser]);
+          showMessage(`Solicitação de criação enviada para ${user.email}. O usuário deve confirmar o e-mail.`, 'Conta Criada', 'info');
+          return;
+        }
       }
 
-      // Manter atualização local para feedback imediato
+      // Fallback para atualização local caso não entre no bloco auth
       setUsers(prev => [...prev, user]);
     } catch (err: any) {
       showMessage('Erro ao criar usuário: ' + translateError(err), 'Erro', 'error');

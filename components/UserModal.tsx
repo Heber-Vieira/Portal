@@ -128,6 +128,16 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
     }));
   };
 
+  const toggleAllApps = () => {
+    const allAppIds = apps.map(app => app.id);
+    const areAllSelected = formData.allowedApps?.length === allAppIds.length;
+
+    setFormData(prev => ({
+      ...prev,
+      allowedApps: areAllSelected ? [] : allAppIds
+    }));
+  };
+
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200 flex flex-col max-h-[90vh]">
@@ -326,7 +336,17 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
               ))}
             </div>
 
-            <label className="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3 ml-1">Aplicativos Permitidos</label>
+            <div className="flex items-center justify-between mb-3 ml-1">
+              <label className="block text-[10px] font-black uppercase text-slate-400 tracking-widest">Aplicativos Permitidos</label>
+              <button
+                type="button"
+                onClick={toggleAllApps}
+                className="text-[9px] font-black uppercase text-blue-600 hover:text-blue-700 tracking-widest transition-colors flex items-center space-x-1"
+              >
+                <IconRenderer name={formData.allowedApps?.length === apps.length ? 'X' : 'Check'} className="w-3 h-3" />
+                <span>{formData.allowedApps?.length === apps.length ? 'Limpar Todos' : 'Marcar Todos'}</span>
+              </button>
+            </div>
             <div className="space-y-2 max-h-48 overflow-y-auto p-1 custom-scrollbar">
               {apps.map(app => {
                 const isSelected = formData.allowedApps?.includes(app.id);
