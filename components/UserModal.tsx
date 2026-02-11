@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { User, UserRole, SaaSLink } from '../types.ts';
-import { IconRenderer } from './IconRenderer.tsx';
+import { User, UserRole, SaaSLink } from '../types';
+import { IconRenderer } from './IconRenderer';
 import { supabase } from '../supabase';
 
 interface UserModalProps {

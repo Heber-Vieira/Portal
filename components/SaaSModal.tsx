@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { SaaSLink, SaaSCategory } from '../types.ts';
-import { IconRenderer } from './IconRenderer.tsx';
-import { ICON_OPTIONS } from '../constants.tsx';
+import { SaaSLink, SaaSCategory } from '../types';
+import { IconRenderer } from './IconRenderer';
+import { ICON_OPTIONS } from '../constants';
 
 interface SaaSModalProps {
   isOpen: boolean;

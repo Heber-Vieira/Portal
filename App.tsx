@@ -1,27 +1,27 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { supabase } from './supabase';
-import { SaaSLink, User, Category, UsageData } from './types.ts';
-import { translateError } from './utils/errorTranslations.ts';
-import { INITIAL_SAAS_LINKS, CATEGORIES, TEST_USERS } from './constants.tsx';
-import { SaaSCard } from './components/SaaSCard.tsx';
-import { SaaSModal } from './components/SaaSModal.tsx';
-import { ManageCategoriesModal } from './components/ManageCategoriesModal.tsx';
-import { ManageUsersModal } from './components/ManageUsersModal.tsx';
-import { ConfirmModal } from './components/ConfirmModal.tsx';
-import { MessageModal } from './components/MessageModal.tsx';
-import { StatsDashboard } from './components/StatsDashboard.tsx';
+import { SaaSLink, User, Category, UsageData } from './types';
+import { translateError } from './utils/errorTranslations';
+import { INITIAL_SAAS_LINKS, CATEGORIES, TEST_USERS } from './constants';
+import { SaaSCard } from './components/SaaSCard';
+import { SaaSModal } from './components/SaaSModal';
+import { ManageCategoriesModal } from './components/ManageCategoriesModal';
+import { ManageUsersModal } from './components/ManageUsersModal';
+import { ConfirmModal } from './components/ConfirmModal';
+import { MessageModal } from './components/MessageModal';
+import { StatsDashboard } from './components/StatsDashboard';
 import {
   ProfileModal,
   SettingsModal
-} from './components/UtilityModals.tsx';
-import { HelpCenter } from './components/HelpCenter.tsx';
-import { CookieConsent } from './components/CookieConsent.tsx';
-import { IconRenderer } from './components/IconRenderer.tsx';
-import { Header } from './components/Header.tsx';
-import { Footer } from './components/Footer.tsx';
-import { ActionBar } from './components/ActionBar.tsx';
-import { Login } from './components/Login.tsx';
+} from './components/UtilityModals';
+import { HelpCenter } from './components/HelpCenter';
+import { CookieConsent } from './components/CookieConsent';
+import { IconRenderer } from './components/IconRenderer';
+import { Header } from './components/Header';
+import { Footer } from './components/Footer';
+import { ActionBar } from './components/ActionBar';
+import { Login } from './components/Login';
 
 const App: React.FC = () => {
   const [session, setSession] = useState<any>(null);

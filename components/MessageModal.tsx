@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { IconRenderer } from './IconRenderer.tsx';
+import { IconRenderer } from './IconRenderer';
 
 interface MessageModalProps {
     isOpen: boolean;

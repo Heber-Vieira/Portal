@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
-import { IconRenderer } from './IconRenderer.tsx';
-import { User, SaaSLink } from '../types.ts';
-import { UserModal } from './UserModal.tsx';
+import { IconRenderer } from './IconRenderer';
+import { User, SaaSLink } from '../types';
+import { UserModal } from './UserModal';
 
 interface ManageUsersModalProps {
   isOpen: boolean;
