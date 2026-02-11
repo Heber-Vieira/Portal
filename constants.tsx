@@ -107,7 +107,24 @@ export const CATEGORIES = [
 ];
 
 export const ICON_OPTIONS = [
-  'Wrench', 'GitBranch', 'Package', 'BarChart3', 'Calendar',
-  'Settings', 'Activity', 'Layers', 'Database', 'Shield',
-  'Cpu', 'Zap', 'Globe', 'Truck', 'FileText'
+  // Maintenance, Industrial & Tech
+  'Wrench', 'Hammer', 'Construction', 'HardHat', 'Drill', 'PlugZap', 'PencilRuler', 'Cog', 'Settings', 'Cpu', 'Zap', 'Database', 'Factory', 'HardDrive', 'Server', 'Binary', 'Cloud', 'Code', 'Terminal', 'Monitor', 'Smartphone', 'Wifi', 'ScanSearch', 'Key', 'ThermometerSnowflake', 'Droplets', 'Cylinder',
+
+  // Business & Finance
+  'Briefcase', 'Package', 'Truck', 'ShoppingCart', 'ShoppingBag', 'CreditCard', 'Wallet', 'Receipt', 'Building2', 'Compass',
+
+  // Data & Analysis
+  'BarChart3', 'PieChart', 'TrendingUp', 'Activity', 'Layers', 'GitBranch', 'LineChart', 'FileText', 'Clipboard',
+
+  // Communication & Actions
+  'Globe', 'Mail', 'MessageSquare', 'Phone', 'Share2', 'Users', 'UserPlus', 'Bell', 'Link', 'Hash',
+
+  // Productivity & Web
+  'Calendar', 'Clock', 'Search', 'Filter', 'Plus', 'Target', 'Flag', 'Star', 'Bookmark', 'List', 'Shield', 'Lock', 'Unlock',
+
+  // Media & Design
+  'Image', 'Video', 'Music', 'Camera', 'Eye', 'PenTool', 'Palette', 'Maximize', 'Minimize',
+
+  // Health & Safety
+  'HeartPulse', 'Stethoscope', 'Syringe', 'FlaskConical', 'Dna', 'ShieldAlert', 'LifeBuoy', 'Flame'
 ];
