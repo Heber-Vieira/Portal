@@ -53,7 +53,31 @@ const App: React.FC = () => {
   const isAdmin = currentUser.role === 'Administrador';
 
   useEffect(() => {
-    const fetchProfile = async (userId: string) => {
+    // 1. Verificar sessão inicial
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setIsAuthChecking(false);
+    });
+
+    // 2. Ouvir mudanças de auth
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (!session) {
+        setIsLoggedOut(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // 3. Carregar dados sempre que a sessão mudar
+  useEffect(() => {
+    if (!session?.user) return;
+
+    const fetchAllData = async () => {
+      const userId = session.user.id;
+
+      // Carregar Perfil
       const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
       if (profile) {
         const userObj: User = {
@@ -88,56 +112,33 @@ const App: React.FC = () => {
           }
         }
       }
+
+      // Carregar Categorias
+      const { data: catData } = await supabase.from('categories').select('*').order('order', { ascending: true });
+      if (catData) setCategories(catData.map(c => ({
+        name: c.name,
+        isVisible: c.is_visible,
+        order: c.order || 0
+      })));
+
+      // Carregar Links
+      const { data: linkData } = await supabase.from('saas_links').select('*').order('name');
+      if (linkData) setLinks(linkData.map(l => ({
+        id: l.id,
+        name: l.name,
+        url: l.url,
+        description: l.description,
+        category: l.category_name,
+        icon: l.icon as any,
+        accentColor: l.accent_color,
+        isPinned: l.is_pinned,
+        isActive: l.is_active,
+        isVisibleToUsers: l.is_visible_to_users
+      })));
     };
 
-    // 1. Verificar sessão inicial
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      }
-      setIsAuthChecking(false);
-    });
-
-    // 2. Carregar Categorias do Supabase
-    supabase.from('categories').select('*').order('order', { ascending: true })
-      .then(({ data }) => {
-        if (data) setCategories(data.map(c => ({
-          name: c.name,
-          isVisible: c.is_visible,
-          order: c.order || 0
-        })));
-      });
-
-    // 3. Carregar Links do Supabase
-    supabase.from('saas_links').select('*').order('name')
-      .then(({ data }) => {
-        if (data) setLinks(data.map(l => ({
-          id: l.id,
-          name: l.name,
-          url: l.url,
-          description: l.description,
-          category: l.category_name,
-          icon: l.icon as any,
-          accentColor: l.accent_color,
-          isPinned: l.is_pinned,
-          isActive: l.is_active,
-          isVisibleToUsers: l.is_visible_to_users
-        })));
-      });
-
-    // Ouvir mudanças de auth
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      } else {
-        setIsLoggedOut(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+    fetchAllData();
+  }, [session]);
 
   const [showAddEditModal, setShowAddEditModal] = useState(false);
   const [editingSaaS, setEditingSaaS] = useState<SaaSLink | null>(null);
