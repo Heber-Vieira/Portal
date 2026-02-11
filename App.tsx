@@ -53,47 +53,46 @@ const App: React.FC = () => {
   const isAdmin = currentUser.role === 'Administrador';
 
   useEffect(() => {
+    const fetchProfile = async (userId: string) => {
+      const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
+      if (profile) {
+        const userObj: User = {
+          id: profile.id,
+          name: profile.name,
+          email: profile.email,
+          role: profile.role as any,
+          avatarUrl: profile.avatar_url,
+          isActive: profile.is_active,
+          allowedApps: profile.allowed_apps || []
+        };
+        setCurrentUser(userObj);
+        if (profile.is_dark_mode !== undefined) setIsDarkMode(profile.is_dark_mode);
+        if (profile.is_dense_grid !== undefined) setIsDenseGrid(profile.is_dense_grid);
+        if (profile.notifications_enabled !== undefined) setNotificationsEnabled(profile.notifications_enabled);
+
+        // Se for admin, carregar todos os usuários
+        if (profile.role === 'Administrador') {
+          const { data: allUsers } = await supabase.from('profiles').select('*').order('name');
+          if (allUsers) {
+            setUsers(allUsers.map(u => ({
+              id: u.id,
+              name: u.name,
+              email: u.email,
+              role: u.role as any,
+              avatarUrl: u.avatar_url,
+              isActive: u.is_active,
+              allowedApps: u.allowed_apps || []
+            })));
+          }
+        }
+      }
+    };
+
     // 1. Verificar sessão inicial
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (session?.user) {
-        // Buscar perfil no banco
-        supabase.from('profiles').select('*').eq('id', session.user.id).maybeSingle()
-          .then(({ data: profile }) => {
-            if (profile) {
-              const userObj: User = {
-                id: profile.id,
-                name: profile.name,
-                email: profile.email,
-                role: profile.role as any,
-                avatarUrl: profile.avatar_url,
-                isActive: profile.is_active,
-                allowedApps: profile.allowed_apps || []
-              };
-              setCurrentUser(userObj);
-              if (profile.is_dark_mode !== undefined) setIsDarkMode(profile.is_dark_mode);
-              if (profile.is_dense_grid !== undefined) setIsDenseGrid(profile.is_dense_grid);
-              if (profile.notifications_enabled !== undefined) setNotificationsEnabled(profile.notifications_enabled);
-
-              // Se for admin, carregar todos os usuários
-              if (profile.role === 'Administrador') {
-                supabase.from('profiles').select('*').order('name')
-                  .then(({ data: allUsers }) => {
-                    if (allUsers) {
-                      setUsers(allUsers.map(u => ({
-                        id: u.id,
-                        name: u.name,
-                        email: u.email,
-                        role: u.role as any,
-                        avatarUrl: u.avatar_url,
-                        isActive: u.is_active,
-                        allowedApps: u.allowed_apps || []
-                      })));
-                    }
-                  });
-              }
-            }
-          });
+        fetchProfile(session.user.id);
       }
       setIsAuthChecking(false);
     });
@@ -128,7 +127,9 @@ const App: React.FC = () => {
     // Ouvir mudanças de auth
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      if (!session) {
+      if (session?.user) {
+        fetchProfile(session.user.id);
+      } else {
         setIsLoggedOut(false);
       }
     });
@@ -386,7 +387,11 @@ const App: React.FC = () => {
 
         return matchesSearch && categoryMatch && matchesTab && visibilityMatch;
       })
-      .sort((a, b) => a.name.localeCompare(b.name, 'pt', { sensitivity: 'base' }));
+      .sort((a, b) => {
+        if (a.isPinned && !b.isPinned) return -1;
+        if (!a.isPinned && b.isPinned) return 1;
+        return a.name.localeCompare(b.name, 'pt', { sensitivity: 'base' });
+      });
   }, [links, searchTerm, selectedCategory, activeTab, isAdmin, currentUser.allowedApps]);
 
   const activeCategories = useMemo(() => {
