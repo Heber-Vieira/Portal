@@ -1,5 +1,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 import { SaaSLink, User, Category, UsageData } from './types';
 import { translateError } from './utils/errorTranslations';
@@ -289,9 +290,22 @@ const App: React.FC = () => {
   const handleAddUser = async (user: User, password?: string) => {
     try {
       if (password) {
-        // Criar usuário no Supabase Auth
-        // Isso vai disparar a trigger on_auth_user_created para criar o perfil
-        const { data, error } = await supabase.auth.signUp({
+        // Criar um cliente temporário para não afetar a sessão atual do administrador
+        // Isso evita que o signUp faça login automático e derrube a sessão do admin
+        const tempSupabase = createClient(
+          import.meta.env.VITE_SUPABASE_URL,
+          import.meta.env.VITE_SUPABASE_ANON_KEY,
+          {
+            auth: {
+              persistSession: false,
+              autoRefreshToken: false,
+              detectSessionInUrl: false
+            }
+          }
+        );
+
+        // Criar usuário no Supabase Auth usando o cliente temporário
+        const { data, error } = await tempSupabase.auth.signUp({
           email: user.email,
           password: password,
           options: {
