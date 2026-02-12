@@ -2,7 +2,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { supabase } from './supabase';
-import { SaaSLink, User, Category, UsageData, Notification } from './types';
+import { SaaSLink, User, Category, UsageData } from './types';
 import { translateError } from './utils/errorTranslations';
 import { INITIAL_SAAS_LINKS, CATEGORIES, TEST_USERS } from './constants';
 import { SaaSCard } from './components/SaaSCard';
@@ -165,6 +165,11 @@ const App: React.FC = () => {
   useEffect(() => {
     if (!session?.user) return;
 
+    // Request Notification Permission
+    if (Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
     const channel = supabase
       .channel('public:notifications')
       .on(
@@ -174,6 +179,19 @@ const App: React.FC = () => {
           const newNotif = payload.new as any;
           if (newNotif.is_global || newNotif.target_user_id === session.user.id) {
             setNotifications(prev => [{ ...newNotif, time: new Date(newNotif.created_at).toLocaleDateString() }, ...prev]);
+
+            // Push Notification / Alert
+            if (notificationsEnabled) {
+              if (Notification.permission === 'granted') {
+                new Notification(newNotif.title, { body: newNotif.message, icon: '/favicon.ico' });
+              }
+              // Also show a toast/modal for alerts?
+              if (newNotif.type === 'alert') {
+                // Optional: auto-open modal for critical alerts
+                // showMessage(newNotif.message, newNotif.title, 'error', newNotif.id); 
+                // Kept passive to avoid disrupting workflow, standard notification is enough.
+              }
+            }
           }
         }
       )
@@ -182,7 +200,14 @@ const App: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [session]);
+  }, [session, notificationsEnabled]);
+
+  const toggleSetting = async (key: 'is_dark_mode' | 'is_dense_grid' | 'notifications_enabled', value: boolean, setter: (v: boolean) => void) => {
+    setter(value);
+    if (session?.user) {
+      await supabase.from('profiles').update({ [key]: value }).eq('id', session.user.id);
+    }
+  };
 
   const [showAddEditModal, setShowAddEditModal] = useState(false);
   const [editingSaaS, setEditingSaaS] = useState<SaaSLink | null>(null);
@@ -849,20 +874,11 @@ const App: React.FC = () => {
         isOpen={showSettingsModal}
         onClose={() => setShowSettingsModal(false)}
         isDarkMode={isDarkMode}
-        setIsDarkMode={async (val) => {
-          setIsDarkMode(val);
-          if (session?.user?.id) await supabase.from('profiles').update({ is_dark_mode: val }).eq('id', session.user.id);
-        }}
+        setIsDarkMode={(v) => toggleSetting('is_dark_mode', v, setIsDarkMode)}
         isDenseGrid={isDenseGrid}
-        setIsDenseGrid={async (val) => {
-          setIsDenseGrid(val);
-          if (session?.user?.id) await supabase.from('profiles').update({ is_dense_grid: val }).eq('id', session.user.id);
-        }}
+        setIsDenseGrid={(v) => toggleSetting('is_dense_grid', v, setIsDenseGrid)}
         notificationsEnabled={notificationsEnabled}
-        setNotificationsEnabled={async (val) => {
-          setNotificationsEnabled(val);
-          if (session?.user?.id) await supabase.from('profiles').update({ notifications_enabled: val }).eq('id', session.user.id);
-        }}
+        setNotificationsEnabled={(v) => toggleSetting('notifications_enabled', v, setNotificationsEnabled)}
       />
       <SendNotificationModal
         isOpen={showSendNotificationModal}
