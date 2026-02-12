@@ -156,14 +156,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onShowMessage }) =
                         </button>
                     </form>
 
-                    <div className="mt-10 pt-8 border-t border-white/5 text-center">
-                        <button
-                            onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
-                            className="text-[10px] font-black text-slate-400 hover:text-blue-400 uppercase tracking-widest transition-colors"
-                        >
-                            {mode === 'login' ? 'Não possui uma conta? Registre-se' : 'Já possui conta? Faça Login'}
-                        </button>
-                    </div>
+
                 </div>
 
                 <p className="text-center mt-8 text-[9px] font-medium text-slate-500 uppercase tracking-widest opacity-40">
