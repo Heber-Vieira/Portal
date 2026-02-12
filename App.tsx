@@ -82,6 +82,14 @@ const App: React.FC = () => {
       // Carregar Perfil
       const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
       if (profile) {
+        if (profile.is_active === false) {
+          localStorage.setItem('nexus_login_error', 'suspended');
+          await supabase.auth.signOut();
+          setIsLoggedOut(true);
+          window.location.reload();
+          return;
+        }
+
         const userObj: User = {
           id: profile.id,
           name: profile.name,
@@ -197,8 +205,24 @@ const App: React.FC = () => {
       )
       .subscribe();
 
+    const profileChannel = supabase.channel('public:profiles:' + session.user.id)
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${session.user.id}` },
+        async (payload) => {
+          const newProfile = payload.new as any;
+          if (newProfile.is_active === false) {
+            localStorage.setItem('nexus_login_error', 'suspended');
+            await supabase.auth.signOut();
+            window.location.reload();
+          }
+        }
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(channel);
+      supabase.removeChannel(profileChannel);
     };
   }, [session, notificationsEnabled]);
 

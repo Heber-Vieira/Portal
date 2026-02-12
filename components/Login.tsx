@@ -1,8 +1,9 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
 import { IconRenderer } from './IconRenderer';
 import { translateError } from '../utils/errorTranslations';
+import { MessageModal } from './MessageModal';
 
 interface LoginProps {
     onLoginSuccess: (user: any) => void;
@@ -17,6 +18,26 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onShowMessage }) =
     const [error, setError] = useState<string | null>(null);
     const [mode, setMode] = useState<'login' | 'signup'>('login');
     const [showPassword, setShowPassword] = useState(false);
+    const [messageModal, setMessageModal] = useState<{ isOpen: boolean, title: string, message: string, type?: 'warning' | 'info' | 'error' }>({
+        isOpen: false,
+        title: '',
+        message: '',
+        type: 'warning'
+    });
+
+    useEffect(() => {
+        const checkError = localStorage.getItem('nexus_login_error');
+        if (checkError === 'suspended') {
+            setMessageModal({
+                isOpen: true,
+                title: 'Acesso Suspenso',
+                message: "Identificamos uma restrição administrativa em sua credencial NexusPro.\n\nPROTOCOLO DE SEGURANÇA #00-INA\n\nMotivos possíveis:\n• Revisão administrativa\n• Período de inatividade\n• Solicitação de gestão\n\nPara restabelecer seu acesso, contate imediatamente o administrador do sistema.",
+                type: 'error'
+            });
+            // Não remover o item aqui para garantir que sobreviva ao StrictMode em dev
+            // A remoção será feita ao fechar o modal
+        }
+    }, []);
 
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -30,6 +51,21 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onShowMessage }) =
                     password,
                 });
                 if (error) throw error;
+
+                // Verificar status do usuário
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('is_active')
+                    .eq('id', data.user.id)
+                    .single();
+
+                if (profile && profile.is_active === false) {
+                    localStorage.setItem('nexus_login_error', 'suspended');
+                    await supabase.auth.signOut();
+                    window.location.reload(); // Forçar recarregamento para garantir estado limpo
+                    return;
+                }
+
                 onLoginSuccess(data.user);
             } else {
                 const { data, error } = await supabase.auth.signUp({
@@ -163,6 +199,16 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onShowMessage }) =
                     NexusPro® Security Framework v4.2
                 </p>
             </div>
+            <MessageModal
+                isOpen={messageModal.isOpen}
+                onClose={() => {
+                    setMessageModal({ ...messageModal, isOpen: false });
+                    localStorage.removeItem('nexus_login_error');
+                }}
+                title={messageModal.title}
+                message={messageModal.message}
+                type={messageModal.type}
+            />
         </div>
     );
 };
