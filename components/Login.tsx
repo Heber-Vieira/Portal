@@ -16,6 +16,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onShowMessage }) =
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [mode, setMode] = useState<'login' | 'signup'>('login');
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -115,13 +116,20 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onShowMessage }) =
                             <div className="relative">
                                 <IconRenderer name="Lock" className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                                 <input
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white text-xs font-bold outline-none focus:border-blue-500 focus:bg-white/10 transition-all"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-12 text-white text-xs font-bold outline-none focus:border-blue-500 focus:bg-white/10 transition-all"
                                     placeholder="••••••••••••"
                                     required
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors p-1"
+                                >
+                                    <IconRenderer name={showPassword ? 'EyeOff' : 'Eye'} className="w-4 h-4" />
+                                </button>
                             </div>
                         </div>
 

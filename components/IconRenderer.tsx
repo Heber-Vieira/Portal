@@ -26,7 +26,7 @@ import {
   Stethoscope, Syringe, FlaskConical, Dna, ShieldAlert, Flame,
 
   // New Maintenance & Construction
-  Construction, HardHat, Drill, PlugZap, PencilRuler, ThermometerSnowflake, Droplets, Cylinder, Key, ScanSearch
+  Construction, HardHat, Drill, PlugZap, PencilRuler, ThermometerSnowflake, Droplets, Cylinder, Key, ScanSearch, Lock, EyeOff
 } from 'lucide-react';
 
 const icons: Record<string, React.FC<any>> = {
@@ -40,7 +40,7 @@ const icons: Record<string, React.FC<any>> = {
   Mail, MessageSquare, Phone, Share2, Users, UserPlus, Link, Hash,
   Target, Flag, Star, Bookmark, Image, Video, Music, Camera, Eye, PenTool, Palette, Maximize, Minimize,
   Stethoscope, Syringe, FlaskConical, Dna, ShieldAlert, Flame,
-  Construction, HardHat, Drill, PlugZap, PencilRuler, ThermometerSnowflake, Droplets, Cylinder, Key, ScanSearch
+  Construction, HardHat, Drill, PlugZap, PencilRuler, ThermometerSnowflake, Droplets, Cylinder, Key, ScanSearch, Lock, EyeOff
 };
 
 interface IconRendererProps {
