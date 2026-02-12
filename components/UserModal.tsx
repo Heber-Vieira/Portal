@@ -150,7 +150,7 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+        <form id="user-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
           <div className="flex flex-col items-center mb-6">
             <div className="relative group">
               <div className="w-24 h-24 rounded-3xl overflow-hidden border-4 border-slate-50 shadow-xl relative bg-slate-100 flex items-center justify-center">
@@ -383,7 +383,7 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
           </button>
           <button
             type="submit"
-            onClick={handleSubmit}
+            form="user-form"
             className="flex-1 px-4 py-3.5 text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:opacity-95 shadow-xl transition-all active:scale-95 bg-primary"
             style={{ backgroundColor: formData.primaryColor }}
           >

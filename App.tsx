@@ -347,16 +347,17 @@ const App: React.FC = () => {
   const handleUpdateUser = async (user: User, password?: string) => {
     try {
       // 1. Atualizar perfil no banco de dados
-      const { error: profileError } = await supabase.from('profiles').update({
+      const { data: updatedData, error: profileError } = await supabase.from('profiles').update({
         name: user.name,
         role: user.role,
         is_active: user.isActive,
         avatar_url: user.avatarUrl,
         allowed_apps: user.allowedApps,
         primary_color: user.primaryColor
-      }).eq('id', user.id);
+      }).eq('id', user.id).select();
 
       if (profileError) throw profileError;
+      if (!updatedData || updatedData.length === 0) throw new Error('Falha ao atualizar: Registro não encontrado ou permissão negada.');
 
       // 2. Se houver nova senha, enviar e-mail de redefinição
       // Nota: O client SDK não permite mudar senha de outro usuário diretamente sem Admin API.
@@ -375,6 +376,7 @@ const App: React.FC = () => {
         setCurrentUser(user);
       }
     } catch (err: any) {
+      console.error('Erro detalhado:', err);
       showMessage('Erro ao atualizar usuário: ' + translateError(err), 'Erro', 'error');
     }
   };
