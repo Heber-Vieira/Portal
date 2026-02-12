@@ -684,19 +684,20 @@ const App: React.FC = () => {
             </div>
 
             {filteredLinks.length > 0 ? (
-              <div className={`grid gap-3 animate-in fade-in duration-300 ${isDenseGrid ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6'}`}>
+              <div className="flex flex-wrap justify-center gap-3 animate-in fade-in duration-300">
                 {filteredLinks.map(saas => (
-                  <SaaSCard
-                    key={saas.id}
-                    saas={saas}
-                    onDelete={(id) => setDeletingItem({ id, type: 'saas' })}
-                    onTogglePin={handleTogglePin}
-                    onEdit={handleEditSaaS}
-                    onAccess={handleTrackAccess}
-                    isAdmin={isAdmin}
-                    isDense={isDenseGrid}
-                    isDarkMode={isDarkMode}
-                  />
+                  <div key={saas.id} className={`transition-all duration-300 ${isDenseGrid ? 'w-full sm:w-[220px] lg:w-[240px]' : 'w-full sm:w-[320px] lg:w-[350px]'}`}>
+                    <SaaSCard
+                      saas={saas}
+                      onDelete={(id) => setDeletingItem({ id, type: 'saas' })}
+                      onTogglePin={handleTogglePin}
+                      onEdit={handleEditSaaS}
+                      onAccess={handleTrackAccess}
+                      isAdmin={isAdmin}
+                      isDense={isDenseGrid}
+                      isDarkMode={isDarkMode}
+                    />
+                  </div>
                 ))}
               </div>
             ) : (
