@@ -64,10 +64,12 @@ export const Header: React.FC<HeaderProps> = ({
                         <h1 className="text-xs font-black tracking-tighter uppercase">Nexus<span className="text-blue-500">Pro</span></h1>
                     </div>
 
-                    <nav className={`hidden lg:flex items-center rounded p-0.5 transition-colors ${isDarkMode ? 'bg-white/5' : 'bg-slate-100'}`}>
-                        <button onClick={() => setActiveTab('all')} className={`px-3 py-1 rounded text-[8px] font-black uppercase tracking-widest transition-all ${activeTab === 'all' ? (isDarkMode ? 'bg-white text-slate-900' : 'bg-white text-slate-900 shadow-sm') : 'text-slate-400 hover:text-slate-300'}`}>Todos</button>
-                        <button onClick={() => setActiveTab('pinned')} className={`px-3 py-1 rounded text-[8px] font-black uppercase tracking-widest transition-all ${activeTab === 'pinned' ? (isDarkMode ? 'bg-white text-slate-900' : 'bg-white text-slate-900 shadow-sm') : 'text-slate-400 hover:text-slate-300'}`}>Favoritos</button>
-                    </nav>
+                    {!showStats && (
+                        <nav className={`hidden lg:flex items-center rounded p-0.5 transition-colors ${isDarkMode ? 'bg-white/5' : 'bg-slate-100'}`}>
+                            <button onClick={() => setActiveTab('all')} className={`px-3 py-1 rounded text-[8px] font-black uppercase tracking-widest transition-all ${activeTab === 'all' ? (isDarkMode ? 'bg-white text-slate-900' : 'bg-white text-slate-900 shadow-sm') : 'text-slate-400 hover:text-slate-300'}`}>Todos</button>
+                            <button onClick={() => setActiveTab('pinned')} className={`px-3 py-1 rounded text-[8px] font-black uppercase tracking-widest transition-all ${activeTab === 'pinned' ? (isDarkMode ? 'bg-white text-slate-900' : 'bg-white text-slate-900 shadow-sm') : 'text-slate-400 hover:text-slate-300'}`}>Favoritos</button>
+                        </nav>
+                    )}
                 </div>
 
                 <div className="flex-1 max-w-sm hidden md:block">

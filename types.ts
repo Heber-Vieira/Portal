@@ -65,4 +65,10 @@ export interface UsageData {
   lastAccess: Date;
   topSystemId: string;
   systemBreakdown: SystemUsageStats[]; // Detalhamento por sistema
+  history: HistoryPoint[]; // Histórico de acessos por dia (para gráfico)
+}
+
+export interface HistoryPoint {
+  date: string; // YYYY-MM-DD
+  count: number;
 }

@@ -397,25 +397,115 @@ const App: React.FC = () => {
       });
     }
 
+    // Otimistic update for current user
     setUsageData(prev => {
       const userStat = prev.find(u => u.userId === currentUser.id) || {
-        userId: currentUser.id, userName: currentUser.name, totalAccesses: 0, lastAccess: now, topSystemId: id, systemBreakdown: []
+        userId: currentUser.id, userName: currentUser.name, totalAccesses: 0, lastAccess: now, topSystemId: id, systemBreakdown: [], history: []
       };
+
       const systemStat = userStat.systemBreakdown.find(s => s.systemId === id) || {
         systemId: id, systemName: link.name, totalClicks: 0, lastAccess: now, history: []
       };
+
       systemStat.totalClicks += 1;
       systemStat.lastAccess = now;
+      if (!systemStat.history) systemStat.history = [];
+      systemStat.history.push(now);
+
       userStat.totalAccesses += 1;
       userStat.lastAccess = now;
+
+      // Update history for today
+      const todayStr = now.toISOString().split('T')[0];
+      const historyPoint = userStat.history?.find(h => h.date === todayStr);
+      if (historyPoint) {
+        historyPoint.count += 1;
+      } else {
+        if (!userStat.history) userStat.history = [];
+        userStat.history.push({ date: todayStr, count: 1 });
+      }
+
       userStat.systemBreakdown = userStat.systemBreakdown.some(s => s.systemId === id)
         ? userStat.systemBreakdown.map(s => s.systemId === id ? systemStat : s)
         : [...userStat.systemBreakdown, systemStat];
+
       return prev.some(u => u.userId === currentUser.id)
         ? prev.map(u => u.userId === currentUser.id ? userStat : u)
         : [...prev, userStat];
     });
   };
+
+  // Fetch initial analytics data (last 30 days)
+  useEffect(() => {
+    if (!isAdmin || !session) return;
+
+    const fetchAnalytics = async () => {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const { data: logs, error } = await supabase
+        .from('usage_logs')
+        .select('created_at, user_id, link_id, profiles(name)')
+        .gte('created_at', thirtyDaysAgo.toISOString());
+
+      if (error || !logs) return;
+
+      const userMap = new Map<string, UsageData>();
+
+      logs.forEach(log => {
+        const userId = log.user_id;
+        const linkId = log.link_id;
+        const date = new Date(log.created_at);
+        const dateStr = date.toISOString().split('T')[0];
+        const profileData = log.profiles as any;
+        const userName = (Array.isArray(profileData) ? profileData[0]?.name : profileData?.name) || 'Usuário Desconhecido';
+        const linkName = links.find(l => l.id === linkId)?.name || 'Sistema';
+
+        if (!userMap.has(userId)) {
+          userMap.set(userId, {
+            userId,
+            userName,
+            totalAccesses: 0,
+            lastAccess: date,
+            topSystemId: '',
+            systemBreakdown: [],
+            history: []
+          });
+        }
+
+        const userStat = userMap.get(userId)!;
+        userStat.totalAccesses++;
+        if (date > userStat.lastAccess) userStat.lastAccess = date;
+
+        // Update system stats
+        let sysStat = userStat.systemBreakdown.find(s => s.systemId === linkId);
+        if (!sysStat) {
+          sysStat = { systemId: linkId, systemName: linkName, totalClicks: 0, lastAccess: date, history: [] };
+          userStat.systemBreakdown.push(sysStat);
+        }
+        sysStat.totalClicks++;
+        if (date > sysStat.lastAccess) sysStat.lastAccess = date;
+        sysStat.history.push(date);
+
+        // Update history
+        let historyPoint = userStat.history.find(h => h.date === dateStr);
+        if (!historyPoint) {
+          historyPoint = { date: dateStr, count: 0 };
+          userStat.history.push(historyPoint);
+        }
+        historyPoint.count++;
+      });
+
+      // Sort history dates
+      userMap.forEach(user => {
+        user.history.sort((a, b) => a.date.localeCompare(b.date));
+      });
+
+      setUsageData(Array.from(userMap.values()));
+    };
+
+    fetchAnalytics();
+  }, [isAdmin, session, links]);
 
   const filteredLinks = useMemo(() => {
     return links
@@ -533,7 +623,7 @@ const App: React.FC = () => {
 
       <main className="max-w-[1800px] mx-auto px-4 py-6 flex-1 w-full text-inherit">
         {showStats && isAdmin ? (
-          <StatsDashboard data={usageData} totalSystems={links.length} links={links} />
+          <StatsDashboard data={usageData} totalSystems={links.length} totalUsers={users.length} links={links} />
         ) : (
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
