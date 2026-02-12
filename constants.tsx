@@ -106,25 +106,51 @@ export const CATEGORIES = [
   'Outros'
 ];
 
-export const ICON_OPTIONS = [
-  // Maintenance, Industrial & Tech
-  'Wrench', 'Hammer', 'Construction', 'HardHat', 'Drill', 'PlugZap', 'PencilRuler', 'Cog', 'Settings', 'Cpu', 'Zap', 'Database', 'Factory', 'HardDrive', 'Server', 'Binary', 'Cloud', 'Code', 'Terminal', 'Monitor', 'Smartphone', 'Wifi', 'ScanSearch', 'Key', 'ThermometerSnowflake', 'Droplets', 'Cylinder',
-
-  // Business & Finance
-  'Briefcase', 'Package', 'Truck', 'ShoppingCart', 'ShoppingBag', 'CreditCard', 'Wallet', 'Receipt', 'Building2', 'Compass',
-
-  // Data & Analysis
-  'BarChart3', 'PieChart', 'TrendingUp', 'Activity', 'Layers', 'GitBranch', 'LineChart', 'FileText', 'Clipboard',
-
-  // Communication & Actions
-  'Globe', 'Mail', 'MessageSquare', 'Phone', 'Share2', 'Users', 'UserPlus', 'Bell', 'Link', 'Hash',
-
-  // Productivity & Web
-  'Calendar', 'Clock', 'Search', 'Filter', 'Plus', 'Target', 'Flag', 'Star', 'Bookmark', 'List', 'Shield', 'Lock', 'Unlock',
-
-  // Media & Design
-  'Image', 'Video', 'Music', 'Camera', 'Eye', 'PenTool', 'Palette', 'Maximize', 'Minimize',
-
-  // Health & Safety
-  'HeartPulse', 'Stethoscope', 'Syringe', 'FlaskConical', 'Dna', 'ShieldAlert', 'LifeBuoy', 'Flame'
+export const ICON_GROUPS = [
+  {
+    label: 'Indústria & Manutenção',
+    icons: ['Wrench', 'Hammer', 'Construction', 'Drill', 'PlugZap', 'PencilRuler', 'Cog', 'Settings', 'Factory', 'Cylinder', 'ThermometerSnowflake', 'Droplets']
+  },
+  {
+    label: 'Qualidade & Normas',
+    icons: ['CheckCircle', 'Medal', 'Ribbon', 'ThumbsUp', 'Microscope', 'Scale', 'ScrollText', 'Stamp', 'Gauge', 'Clipboard', 'FileText']
+  },
+  {
+    label: 'Segurança do Trabalho',
+    icons: ['HardHat', 'Glasses', 'Ear', 'FireExtinguisher', 'Biohazard', 'Radiation', 'TriangleAlert', 'Siren', 'ShieldAlert', 'LifeBuoy', 'Flame']
+  },
+  {
+    label: 'Educação & Treinamento',
+    icons: ['Book', 'Library', 'School', 'GraduationCap', 'Brain', 'Lightbulb', 'Presentation']
+  },
+  {
+    label: 'Comunicação & RH',
+    icons: ['Globe', 'Mail', 'MessageSquare', 'Phone', 'Share2', 'Users', 'UserPlus', 'Bell', 'Link', 'Hash', 'UserCog', 'UserCheck', 'BadgeCheck', 'Award', 'Megaphone', 'Radio', 'Mic', 'Cast', 'Inbox']
+  },
+  {
+    label: 'Tecnologia & Dados',
+    icons: ['Cpu', 'Zap', 'Database', 'HardDrive', 'Server', 'Binary', 'Cloud', 'Code', 'Terminal', 'Monitor', 'Smartphone', 'Wifi', 'ScanSearch', 'BarChart3', 'PieChart', 'TrendingUp', 'Activity', 'Layers', 'GitBranch', 'LineChart', 'FileText', 'Clipboard']
+  },
+  {
+    label: 'Segurança & Acesso',
+    icons: ['Shield', 'Lock', 'Unlock', 'Key', 'ShieldCheck', 'ShieldX', 'Fingerprint', 'Cctv', 'ScanFace', 'FileKey']
+  },
+  {
+    label: 'Negócios & Finanças',
+    icons: ['Briefcase', 'Package', 'Truck', 'ShoppingCart', 'ShoppingBag', 'CreditCard', 'Wallet', 'Receipt', 'Building2', 'Compass', 'Target', 'Flag', 'Star', 'Bookmark']
+  },
+  {
+    label: 'Saúde & Ciência',
+    icons: ['HeartPulse', 'Stethoscope', 'Syringe', 'FlaskConical', 'Dna']
+  },
+  {
+    label: 'Mídia & Design',
+    icons: ['Image', 'Video', 'Music', 'Camera', 'Eye', 'PenTool', 'Palette', 'Maximize', 'Minimize']
+  },
+  {
+    label: 'Geral',
+    icons: ['Calendar', 'Clock', 'Search', 'Filter', 'Plus', 'List']
+  }
 ];
+
+export const ICON_OPTIONS = ICON_GROUPS.flatMap(g => g.icons);

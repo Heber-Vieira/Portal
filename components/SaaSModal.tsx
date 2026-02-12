@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SaaSLink, SaaSCategory } from '../types';
 import { IconRenderer } from './IconRenderer';
-import { ICON_OPTIONS } from '../constants';
+import { ICON_OPTIONS, ICON_GROUPS } from '../constants';
 
 interface SaaSModalProps {
   isOpen: boolean;
@@ -217,16 +217,23 @@ export const SaaSModal: React.FC<SaaSModalProps> = ({ isOpen, onClose, onSave, i
           {!formData.imageUrl && (
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1">Escolha um Ícone</label>
-              <div className="grid grid-cols-5 gap-2 max-h-32 overflow-y-auto p-3 bg-slate-50 border border-slate-100 rounded-xl custom-scrollbar">
-                {ICON_OPTIONS.map(iconName => (
-                  <button
-                    key={iconName}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, icon: iconName })}
-                    className={`p-2.5 flex items-center justify-center rounded-lg transition-all ${formData.icon === iconName ? 'bg-primary text-white shadow-lg shadow-blue-500/30' : 'bg-white text-slate-400 hover:text-slate-600 border border-slate-100 hover:border-slate-300'}`}
-                  >
-                    <IconRenderer name={iconName} className="w-5 h-5" />
-                  </button>
+              <div className="max-h-60 overflow-y-auto p-3 bg-slate-50 border border-slate-100 rounded-xl custom-scrollbar space-y-4">
+                {ICON_GROUPS.map(group => (
+                  <div key={group.label}>
+                    <h4 className="text-[10px] uppercase font-black text-slate-400 mb-2 sticky top-0 bg-slate-50 py-1 z-10">{group.label}</h4>
+                    <div className="grid grid-cols-5 gap-2">
+                      {group.icons.map(iconName => (
+                        <button
+                          key={iconName}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, icon: iconName })}
+                          className={`p-2.5 flex items-center justify-center rounded-lg transition-all ${formData.icon === iconName ? 'bg-primary text-white shadow-lg shadow-blue-500/30' : 'bg-white text-slate-400 hover:text-slate-600 border border-slate-100 hover:border-slate-300'}`}
+                        >
+                          <IconRenderer name={iconName} className="w-5 h-5" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
