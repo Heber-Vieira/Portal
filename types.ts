@@ -72,3 +72,15 @@ export interface HistoryPoint {
   date: string; // YYYY-MM-DD
   count: number;
 }
+
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  type: 'info' | 'alert' | 'success' | 'warning';
+  created_at: string;
+  is_global: boolean;
+  target_user_id?: string | null;
+  read?: boolean;
+}
+

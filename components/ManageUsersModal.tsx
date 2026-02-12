@@ -62,7 +62,7 @@ export const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
                 className={`flex items-center justify-between p-4 rounded-[1.5rem] border transition-all ${user.isActive ? 'bg-white border-slate-100 hover:border-slate-300' : 'bg-slate-50 border-slate-100 opacity-60'}`}
               >
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-slate-50 shrink-0">
+                  <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-slate-50 bg-white shrink-0">
                     <img src={user.avatarUrl} className="w-full h-full object-cover grayscale" alt="" />
                   </div>
                   <div>

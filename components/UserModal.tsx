@@ -153,7 +153,7 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
         <form id="user-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
           <div className="flex flex-col items-center mb-6">
             <div className="relative group">
-              <div className="w-24 h-24 rounded-3xl overflow-hidden border-4 border-slate-50 shadow-xl relative bg-slate-100 flex items-center justify-center">
+              <div className="w-24 h-24 rounded-3xl overflow-hidden border-4 border-white shadow-xl relative bg-white flex items-center justify-center">
                 {formData.avatarUrl ? (
                   <img src={formData.avatarUrl} className="w-full h-full object-cover" alt="Preview" />
                 ) : (

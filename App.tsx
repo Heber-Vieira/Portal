@@ -2,7 +2,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { supabase } from './supabase';
-import { SaaSLink, User, Category, UsageData } from './types';
+import { SaaSLink, User, Category, UsageData, Notification } from './types';
 import { translateError } from './utils/errorTranslations';
 import { INITIAL_SAAS_LINKS, CATEGORIES, TEST_USERS } from './constants';
 import { SaaSCard } from './components/SaaSCard';
@@ -11,6 +11,7 @@ import { ManageCategoriesModal } from './components/ManageCategoriesModal';
 import { ManageUsersModal } from './components/ManageUsersModal';
 import { ConfirmModal } from './components/ConfirmModal';
 import { MessageModal } from './components/MessageModal';
+import { SendNotificationModal } from './components/SendNotificationModal';
 import { StatsDashboard } from './components/StatsDashboard';
 import {
   ProfileModal,
@@ -144,6 +145,11 @@ const App: React.FC = () => {
         isActive: l.is_active,
         isVisibleToUsers: l.is_visible_to_users
       })));
+
+      const { data: notifs } = await supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(10);
+      if (notifs) {
+        setNotifications(notifs.map((n: any) => ({ ...n, time: new Date(n.created_at).toLocaleDateString() })));
+      }
     };
 
     fetchAllData();
@@ -174,9 +180,8 @@ const App: React.FC = () => {
   };
 
   const [usageData, setUsageData] = useState<UsageData[]>([]);
-  const [notifications, setNotifications] = useState([
-    { id: '1', title: 'Manutenção programada no FlowMaster às 22h', time: 'Há 5 min', type: 'alert' }
-  ]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [showSendNotificationModal, setShowSendNotificationModal] = useState(false);
 
   const currentYear = new Date().getFullYear();
 
@@ -235,6 +240,27 @@ const App: React.FC = () => {
       await supabase.from('profiles').delete().eq('id', deletingItem.id);
     }
     setDeletingItem(null);
+  };
+
+  const handleSendNotification = async (data: any) => {
+    const dbData = {
+      title: data.title,
+      message: data.message,
+      type: data.type,
+      target_user_id: data.targetUserId,
+      is_global: !data.targetUserId
+    };
+    const { error } = await supabase.from('notifications').insert(dbData);
+    if (error) {
+      showMessage('Erro ao enviar comunicado: ' + error.message, 'Erro', 'error');
+    } else {
+      showMessage('Comunicado enviado com sucesso.', 'Sucesso', 'info');
+      const { data: notifs } = await supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(10);
+      if (notifs) {
+        setNotifications(notifs.map((n: any) => ({ ...n, time: new Date(n.created_at).toLocaleDateString() })));
+      }
+    }
+    setShowSendNotificationModal(false);
   };
 
   const handleSaveSaaS = async (saas: SaaSLink) => {
@@ -633,6 +659,7 @@ const App: React.FC = () => {
         setShowProfileModal={setShowProfileModal}
         setShowSettingsModal={setShowSettingsModal}
         onLogoClick={() => { setShowStats(false); setSelectedCategory('Tudo'); }}
+        onShowSendNotification={() => setShowSendNotificationModal(true)}
       />
 
       <main className="max-w-[1800px] mx-auto px-4 py-6 flex-1 w-full text-inherit">
@@ -759,6 +786,13 @@ const App: React.FC = () => {
           setNotificationsEnabled(val);
           if (session?.user?.id) await supabase.from('profiles').update({ notifications_enabled: val }).eq('id', session.user.id);
         }}
+      />
+      <SendNotificationModal
+        isOpen={showSendNotificationModal}
+        onClose={() => setShowSendNotificationModal(false)}
+        onSend={handleSendNotification}
+        users={users}
+        isDarkMode={isDarkMode}
       />
     </div>
   );

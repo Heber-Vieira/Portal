@@ -26,6 +26,7 @@ interface HeaderProps {
     setShowProfileModal: (show: boolean) => void;
     setShowSettingsModal: (show: boolean) => void;
     onLogoClick: () => void;
+    onShowSendNotification: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -49,7 +50,8 @@ export const Header: React.FC<HeaderProps> = ({
     handleLogout,
     setShowProfileModal,
     setShowSettingsModal,
-    onLogoClick
+    onLogoClick,
+    onShowSendNotification
 }) => {
     return (
         <header className={`sticky top-0 z-40 border-b backdrop-blur-md transition-colors duration-300 ${isDarkMode ? 'bg-[#0f172a]/80 border-white/5' : 'bg-white/70 border-slate-100'}`}>
@@ -88,6 +90,9 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className="flex items-center space-x-1">
                     {isAdmin && (
                         <>
+                            <button onClick={onShowSendNotification} className="p-1.5 text-slate-400 hover:text-blue-500 transition-colors" title="Enviar Comunicado">
+                                <IconRenderer name="Megaphone" className="w-3.5 h-3.5" />
+                            </button>
                             <button onClick={() => setShowManageUsersModal(true)} className="p-1.5 text-slate-400 hover:text-blue-500 transition-colors" title="Gerenciar Usuários">
                                 <IconRenderer name="User" className="w-3.5 h-3.5" />
                             </button>
@@ -103,7 +108,7 @@ export const Header: React.FC<HeaderProps> = ({
                         <IconRenderer name="Bell" className="w-3.5 h-3.5" />
                         {notificationsEnabled && notifications.length > 0 && <span className="absolute top-1.5 right-1.5 w-1 h-1 bg-red-500 rounded-full shadow-sm shadow-red-500/50"></span>}
                     </button>
-                    <button onClick={() => setShowProfilePopover(!showProfilePopover)} className="w-7 h-7 rounded bg-[#0f172a] text-white flex items-center justify-center font-black text-[8px] border border-white/10 overflow-hidden">
+                    <button onClick={() => setShowProfilePopover(!showProfilePopover)} className="w-7 h-7 rounded bg-white text-slate-900 flex items-center justify-center font-black text-[8px] border border-slate-200 overflow-hidden shadow-sm">
                         <img src={currentUser.avatarUrl} className="w-full h-full object-cover" alt="" />
                     </button>
                     <NotificationPopover isOpen={showNotifications} notifications={notifications} onClear={() => setNotifications([])} onClose={() => setShowNotifications(false)} isDarkMode={isDarkMode} />

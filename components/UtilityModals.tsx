@@ -349,7 +349,7 @@ export const ProfileModal: React.FC<{
                 </div>
                 <div className="flex flex-col items-center mb-8">
                     <div className="relative group">
-                        <div className="w-24 h-24 rounded-3xl overflow-hidden border-4 border-slate-50 shadow-xl mb-4 relative bg-slate-100 flex items-center justify-center">
+                        <div className="w-24 h-24 rounded-3xl overflow-hidden border-4 border-white shadow-xl mb-4 relative bg-white flex items-center justify-center">
                             <img src={currentUser.avatarUrl || `https://i.pravatar.cc/150?u=${currentUser.id}`} className="w-full h-full object-cover" alt="" />
                             {uploading && (
                                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
