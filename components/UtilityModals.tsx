@@ -421,3 +421,169 @@ export const ProfileModal: React.FC<{
         </div>
     );
 };
+
+export const AdminSettingsModal: React.FC<ModalProps & {
+    onShowMessage?: (message: string, title?: string, type?: 'warning' | 'info' | 'error') => void;
+    onUpdateLogo: (url: string | undefined) => void;
+    currentLogo?: string;
+    onManageAnnouncements?: () => void;
+}> = ({ isOpen, onClose, isDarkMode, onShowMessage, onUpdateLogo, currentLogo, onManageAnnouncements }) => {
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `logo-${Date.now()}.${fileExt}`;
+            const filePath = `${fileName}`;
+
+            // Upload file
+            const { error: uploadError } = await supabase.storage
+                .from('branding')
+                .upload(filePath, file, { upsert: true });
+
+            if (uploadError) throw uploadError;
+
+            // Get Public URL
+            const { data: { publicUrl } } = supabase.storage
+                .from('branding')
+                .getPublicUrl(filePath);
+
+            // Update system_settings table
+            const { error: dbError } = await supabase
+                .from('system_settings')
+                .upsert({ key: 'logo_url', value: publicUrl });
+
+            if (dbError) throw dbError;
+
+            onUpdateLogo(publicUrl);
+            onShowMessage?.('Logotipo atualizado com sucesso!', 'Sucesso', 'info');
+        } catch (error: any) {
+            console.error(error);
+            onShowMessage?.('Erro ao atualizar logotipo: ' + error.message, 'Erro', 'error');
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const handleRemoveLogo = async () => {
+        setUploading(true);
+        try {
+            // Remove from system_settings table (set to null or delete row)
+            const { error: dbError } = await supabase
+                .from('system_settings')
+                .delete()
+                .eq('key', 'logo_url');
+
+            if (dbError) throw dbError;
+
+            // Note: We are not deleting the file from storage to avoid breaking if it was used elsewhere,
+            // or simply to keep history. If strict cleanup is needed, we would need the path.
+
+            onUpdateLogo(undefined);
+            onShowMessage?.('Logotipo removido. O ícone padrão será usado.', 'Removido', 'info');
+        } catch (error: any) {
+            console.error(error);
+            onShowMessage?.('Erro ao remover logotipo: ' + error.message, 'Erro', 'error');
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+            <div className={`${isDarkMode ? 'bg-[#1e293b] text-white border-white/10' : 'bg-white text-slate-900 border-slate-200'} w-full max-w-sm rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 p-8 border`}>
+                <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-xl font-black tracking-tighter uppercase">Admin Settings</h2>
+                    <div className="flex gap-2">
+                        {onManageAnnouncements && (
+                            <button
+                                onClick={onManageAnnouncements}
+                                className="p-2 hover:bg-slate-500/10 rounded-full transition-colors text-slate-400 hover:text-blue-500"
+                                title="Gerenciar Anúncios"
+                            >
+                                <IconRenderer name="Megaphone" className="w-5 h-5" />
+                            </button>
+                        )}
+                        <button onClick={onClose} className="p-2 hover:bg-slate-500/10 rounded-full transition-colors">
+                            <IconRenderer name="X" className="w-5 h-5 text-slate-400" />
+                        </button>
+                    </div>
+                </div>
+
+                <div className="flex flex-col items-center mb-8">
+                    <div className="relative group w-full flex flex-col items-center">
+                        <div className={`w-32 h-32 rounded-3xl overflow-hidden border-4 shadow-xl mb-4 relative flex items-center justify-center ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-100 border-white'}`}>
+                            {currentLogo ? (
+                                <img src={currentLogo} className="w-full h-full object-contain p-4" alt="System Logo" />
+                            ) : (
+                                <IconRenderer name="Layers" className="w-12 h-12 text-slate-400" />
+                            )}
+
+                            {uploading && (
+                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                    <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                </div>
+                            )}
+                        </div>
+
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Logotipo do Sistema</p>
+
+                        <div className="flex flex-col gap-2 w-full max-w-[200px]">
+                            <button
+                                type="button"
+                                onClick={() => fileInputRef.current?.click()}
+                                disabled={uploading}
+                                className={`w-full px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 ${isDarkMode ? 'bg-white text-slate-900 hover:bg-slate-200' : 'bg-slate-900 text-white hover:bg-slate-800'}`}
+                            >
+                                <IconRenderer name="Upload" className="w-4 h-4" />
+                                {uploading ? 'Enviando...' : 'Carregar Nova Logo'}
+                            </button>
+
+                            {currentLogo && (
+                                <button
+                                    type="button"
+                                    onClick={handleRemoveLogo}
+                                    disabled={uploading}
+                                    className="w-full px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 bg-red-500/10 text-red-500 hover:bg-red-500/20 border border-red-500/10"
+                                >
+                                    <IconRenderer name="Trash2" className="w-4 h-4" />
+                                    Remover Logo
+                                </button>
+                            )}
+                        </div>
+
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            className="hidden"
+                            accept="image/*"
+                            onChange={handleFileUpload}
+                            disabled={uploading}
+                        />
+                    </div>
+                </div>
+
+                <div className={`p-4 rounded-2xl border flex gap-3 ${isDarkMode ? 'bg-blue-500/10 border-blue-500/20 text-blue-200' : 'bg-blue-50 border-blue-100 text-blue-700'}`}>
+                    <div className="p-2 bg-blue-500/20 rounded-lg h-fit">
+                        <IconRenderer name="Info" className="w-4 h-4 text-blue-500" />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-black uppercase text-blue-500 tracking-widest mb-1">Nota Importante</p>
+                        <p className="text-[11px] leading-relaxed">
+                            A imagem deve ser quadrada (1:1) e ter fundo transparente (PNG/SVG) para melhor visualização.
+                        </p>
+                    </div>
+                </div>
+
+                <button onClick={onClose} className="mt-8 w-full py-4 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:opacity-90 active:scale-95 transition-all bg-primary">Fechar</button>
+            </div>
+        </div>
+    );
+};

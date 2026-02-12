@@ -12,10 +12,13 @@ import { ManageUsersModal } from './components/ManageUsersModal';
 import { ConfirmModal } from './components/ConfirmModal';
 import { MessageModal } from './components/MessageModal';
 import { SendNotificationModal } from './components/SendNotificationModal';
+import { FeatureAnnouncementModal } from './components/FeatureAnnouncementModal';
+import { ManageAnnouncementsModal } from './components/ManageAnnouncementsModal';
 import { StatsDashboard } from './components/StatsDashboard';
 import {
   ProfileModal,
-  SettingsModal
+  SettingsModal,
+  AdminSettingsModal
 } from './components/UtilityModals';
 import { HelpCenter } from './components/HelpCenter';
 import { CookieConsent } from './components/CookieConsent';
@@ -36,6 +39,12 @@ const App: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('Tudo');
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoggedOut, setIsLoggedOut] = useState(false);
+
+  // System Settings
+  const [systemLogo, setSystemLogo] = useState<string | undefined>(undefined);
+  const [showAdminSettingsModal, setShowAdminSettingsModal] = useState(false);
+  const [showManageAnnouncements, setShowManageAnnouncements] = useState(false);
+  const [activeAnnouncement, setActiveAnnouncement] = useState<any>(null);
 
   // Settings States
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -134,6 +143,10 @@ const App: React.FC = () => {
       // Carregar Links
       const { data: linkData } = await supabase.from('saas_links').select('*').order('name');
 
+      // Carregar Logo do Sistema
+      const { data: settingsData } = await supabase.from('system_settings').select('value').eq('key', 'logo_url').maybeSingle();
+      if (settingsData) setSystemLogo(settingsData.value);
+
       // Carregar Favoritos do Usuário
       let favoriteIds = new Set<string>();
       if (session?.user?.id) {
@@ -164,6 +177,33 @@ const App: React.FC = () => {
           unread = notifs.filter(n => !readSet.has(n.id));
         }
         setNotifications(unread.map((n: any) => ({ ...n, time: new Date(n.created_at).toLocaleDateString() })));
+      }
+
+      // Check for active announcements
+      const now = new Date();
+      const { data: activeAnnouncements } = await supabase.from('announcements').select('*').eq('is_active', true);
+      const { data: myViews } = await supabase.from('announcement_views').select('*').eq('user_id', userId);
+      const viewMap = new Map((myViews || []).map(v => [v.announcement_id, v.viewed_at]));
+
+      for (const ann of activeAnnouncements || []) {
+        const lastViewedAt = viewMap.get(ann.id);
+        const unexpiredFeatures = (ann.features || []).filter((f: any) => {
+          const createdAt = new Date(f.created_at || ann.created_at || now);
+          const expiryDate = new Date(createdAt);
+          expiryDate.setDate(expiryDate.getDate() + (ann.display_duration || 7));
+          return expiryDate > now;
+        });
+
+        if (unexpiredFeatures.length > 0) {
+          const hasNewItems = unexpiredFeatures.some((f: any) => {
+            if (!lastViewedAt) return true;
+            return new Date(f.created_at || ann.created_at || now) > new Date(lastViewedAt);
+          });
+          if (hasNewItems) {
+            setActiveAnnouncement({ ...ann, features: unexpiredFeatures });
+            break;
+          }
+        }
       }
     };
 
@@ -376,6 +416,41 @@ const App: React.FC = () => {
     setShowSendNotificationModal(false);
   };
 
+  const createAutoAnnouncement = async (type: 'saas' | 'category', item: any) => {
+    try {
+      const title = type === 'saas' ? `🚀 Novo Sistema: ${item.name}` : `📂 Nova Categoria: ${item.name}`;
+      const description = type === 'saas'
+        ? `O sistema ${item.name} foi integrado com sucesso à plataforma.`
+        : `Uma nova categoria "${item.name}" foi criada para organizar seus ativos.`;
+
+      const features = [{
+        title: item.name,
+        description: type === 'saas' ? (item.description || 'Confira já as novas funcionalidades disponíveis.') : 'Nova organização disponível para seus sistemas.',
+        icon: type === 'saas' ? (item.icon || 'Star') : 'Layers',
+        created_at: new Date().toISOString()
+      }];
+
+      const { data: announcement, error } = await supabase.from('announcements').insert({
+        title,
+        description,
+        features,
+        display_duration: 3,
+        is_active: true
+      }).select().single();
+
+      if (!error && announcement && session?.user?.id) {
+        // Use upsert to mark as viewed by creator immediately
+        await supabase.from('announcement_views').upsert({
+          user_id: session.user.id,
+          announcement_id: announcement.id,
+          viewed_at: new Date().toISOString()
+        });
+      }
+    } catch (err) {
+      console.error('Auto announcement failed:', err);
+    }
+  };
+
   const handleSaveSaaS = async (saas: SaaSLink) => {
     const dbData = {
       name: saas.name,
@@ -394,7 +469,10 @@ const App: React.FC = () => {
       await supabase.from('saas_links').update(dbData).eq('id', saas.id);
     } else {
       const { data } = await supabase.from('saas_links').insert(dbData).select().single();
-      if (data) setLinks(prev => [...prev, { ...saas, id: data.id }]);
+      if (data) {
+        setLinks(prev => [...prev, { ...saas, id: data.id }]);
+        createAutoAnnouncement('saas', saas);
+      }
     }
     setShowAddEditModal(false);
     setEditingSaaS(null);
@@ -428,6 +506,7 @@ const App: React.FC = () => {
     const newCat = { name: trimmedName, isVisible: true, order: 0 };
     setCategories(prev => [...prev, newCat]);
     await supabase.from('categories').insert({ name: trimmedName, is_visible: true, order: 0 });
+    createAutoAnnouncement('category', { name: trimmedName });
   };
 
   const handleToggleCategoryVisibility = async (name: string) => {
@@ -775,7 +854,34 @@ const App: React.FC = () => {
         onShowSendNotification={() => setShowSendNotificationModal(true)}
         onNotificationClick={(n) => showMessage(n.message, n.title, n.type === 'alert' ? 'warning' : 'info', n.id)}
         onClearNotifications={handleClearNotifications}
+        systemLogo={systemLogo}
+        onShowAdminSettings={() => setShowAdminSettingsModal(true)}
       />
+
+      <AdminSettingsModal
+        isOpen={showAdminSettingsModal}
+        onClose={() => setShowAdminSettingsModal(false)}
+        isDarkMode={isDarkMode}
+        onShowMessage={showMessage}
+        onUpdateLogo={setSystemLogo}
+        currentLogo={systemLogo}
+        onManageAnnouncements={() => { setShowAdminSettingsModal(false); setShowManageAnnouncements(true); }}
+      />
+
+      <ManageAnnouncementsModal
+        isOpen={showManageAnnouncements}
+        onClose={() => setShowManageAnnouncements(false)}
+        isDarkMode={isDarkMode}
+        onShowMessage={showMessage}
+      />
+
+      {activeAnnouncement && (
+        <FeatureAnnouncementModal
+          announcement={activeAnnouncement}
+          onClose={() => setActiveAnnouncement(null)}
+          isDarkMode={isDarkMode}
+        />
+      )}
 
       <main className="max-w-[1800px] mx-auto px-4 py-6 flex-1 w-full text-inherit">
         {showStats && isAdmin ? (
@@ -860,7 +966,14 @@ const App: React.FC = () => {
 
       <CookieConsent />
 
-      <SaaSModal isOpen={showAddEditModal} onClose={() => { setShowAddEditModal(false); setEditingSaaS(null); }} onSave={handleSaveSaaS} initialData={editingSaaS} categories={categories.map(c => c.name)} />
+      <SaaSModal
+        isOpen={showAddEditModal}
+        onClose={() => { setShowAddEditModal(false); setEditingSaaS(null); }}
+        onSave={handleSaveSaaS}
+        initialData={editingSaaS}
+        categories={categories.map(c => c.name)}
+        defaultCategory={selectedCategory}
+      />
       <ManageCategoriesModal
         isOpen={showCategoriesModal}
         onClose={() => setShowCategoriesModal(false)}

@@ -29,6 +29,9 @@ interface HeaderProps {
     onShowSendNotification: () => void;
     onNotificationClick: (notification: any) => void;
     onClearNotifications: () => void;
+    systemLogo?: string;
+    onShowAdminSettings?: () => void;
+
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -55,7 +58,10 @@ export const Header: React.FC<HeaderProps> = ({
     onLogoClick,
     onShowSendNotification,
     onNotificationClick,
-    onClearNotifications
+    onClearNotifications,
+    systemLogo,
+    onShowAdminSettings
+
 }) => {
     return (
         <header className={`sticky top-0 z-40 border-b backdrop-blur-md transition-colors duration-300 ${isDarkMode ? 'bg-[#0f172a]/80 border-white/5' : 'bg-white/70 border-slate-100'}`}>
@@ -63,9 +69,13 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className="flex items-center space-x-6">
                     <div className="flex items-center space-x-2 group cursor-pointer" onClick={onLogoClick}>
                         <div
-                            className="w-7 h-7 rounded flex items-center justify-center text-white transition-transform group-hover:scale-105 border border-white/10 bg-primary"
+                            className={`w-7 h-7 rounded flex items-center justify-center text-white transition-transform group-hover:scale-105 border border-white/10 ${systemLogo ? 'bg-transparent' : 'bg-primary'}`}
                         >
-                            <IconRenderer name="Layers" className="w-3.5 h-3.5" />
+                            {systemLogo ? (
+                                <img src={systemLogo} className="w-full h-full object-contain rounded" alt="" />
+                            ) : (
+                                <IconRenderer name="Layers" className="w-3.5 h-3.5" />
+                            )}
                         </div>
                         <h1 className="text-xs font-black tracking-tighter uppercase">Nexus<span className="text-blue-500">Pro</span></h1>
                     </div>
@@ -106,6 +116,16 @@ export const Header: React.FC<HeaderProps> = ({
                             >
                                 <IconRenderer name="BarChart3" className="w-3.5 h-3.5" />
                             </button>
+                            {onShowAdminSettings && (
+                                <button
+                                    onClick={onShowAdminSettings}
+                                    className="p-1.5 text-slate-400 hover:text-blue-500 transition-colors"
+                                    title="Configurações do Sistema"
+                                >
+                                    <IconRenderer name="Cog" className="w-3.5 h-3.5" />
+                                </button>
+                            )}
+
                         </>
                     )}
                     <button onClick={() => setShowNotifications(!showNotifications)} className="p-1.5 text-slate-400 hover:text-slate-300 relative">

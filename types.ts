@@ -84,3 +84,24 @@ export interface Notification {
   read?: boolean;
 }
 
+
+export interface Announcement {
+  id: string;
+  title: string;
+  description: string;
+  features: {
+    title: string;
+    description: string;
+    icon: string;
+  }[];
+  display_duration: number;
+  is_active: boolean;
+  version?: string;
+  created_at?: string;
+}
+
+export interface AnnouncementView {
+  user_id: string;
+  announcement_id: string;
+  viewed_at: string;
+}

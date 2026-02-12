@@ -10,9 +10,10 @@ interface SaaSModalProps {
   onSave: (saas: SaaSLink) => void;
   initialData?: SaaSLink | null;
   categories: string[];
+  defaultCategory?: string;
 }
 
-export const SaaSModal: React.FC<SaaSModalProps> = ({ isOpen, onClose, onSave, initialData, categories }) => {
+export const SaaSModal: React.FC<SaaSModalProps> = ({ isOpen, onClose, onSave, initialData, categories, defaultCategory }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -40,11 +41,15 @@ export const SaaSModal: React.FC<SaaSModalProps> = ({ isOpen, onClose, onSave, i
         isVisibleToUsers: initialData.isVisibleToUsers !== undefined ? initialData.isVisibleToUsers : true
       });
     } else {
+      const initialCat = (defaultCategory && defaultCategory !== 'Tudo' && defaultCategory !== 'Outros')
+        ? defaultCategory
+        : 'Outros';
+
       setFormData({
         name: '',
         url: '',
         description: '',
-        category: 'Outros' as SaaSCategory,
+        category: initialCat as SaaSCategory,
         icon: 'Globe',
         accentColor: '#3b82f6',
         imageUrl: '',
@@ -52,7 +57,7 @@ export const SaaSModal: React.FC<SaaSModalProps> = ({ isOpen, onClose, onSave, i
         isVisibleToUsers: true
       });
     }
-  }, [initialData, isOpen]);
+  }, [initialData, isOpen, defaultCategory]);
 
   if (!isOpen) return null;
 

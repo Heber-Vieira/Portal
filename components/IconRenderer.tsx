@@ -26,7 +26,7 @@ import {
   Stethoscope, Syringe, FlaskConical, Dna, ShieldAlert, Flame,
 
   // New Maintenance & Construction
-  Construction, HardHat, Drill, PlugZap, PencilRuler, ThermometerSnowflake, Droplets, Cylinder, Key, ScanSearch, Lock, EyeOff, UserCog, UserCheck, BadgeCheck, GraduationCap, Award, Megaphone, Radio, Mic, Cast, Inbox, ShieldCheck, ShieldX, Fingerprint, Siren, Cctv, ScanFace, FileKey, Book, Library, School, Brain, Lightbulb, Presentation, TriangleAlert, FireExtinguisher, Biohazard, Radiation, Glasses, Ear, CheckCircle, Medal, Ribbon, ThumbsUp, Microscope, Scale, ScrollText, Stamp, Gauge, Info
+  Construction, HardHat, Drill, PlugZap, PencilRuler, ThermometerSnowflake, Droplets, Cylinder, Key, ScanSearch, Lock, EyeOff, UserCog, UserCheck, BadgeCheck, GraduationCap, Award, Megaphone, Radio, Mic, Cast, Inbox, ShieldCheck, ShieldX, Fingerprint, Siren, Cctv, ScanFace, FileKey, Book, Library, School, Brain, Lightbulb, Presentation, TriangleAlert, FireExtinguisher, Biohazard, Radiation, Glasses, Ear, CheckCircle, Medal, Ribbon, ThumbsUp, Microscope, Scale, ScrollText, Stamp, Gauge, Info, Upload
 } from 'lucide-react';
 
 const icons: Record<string, React.FC<any>> = {
@@ -40,7 +40,7 @@ const icons: Record<string, React.FC<any>> = {
   Mail, MessageSquare, Phone, Share2, Users, UserPlus, Link, Hash,
   Target, Flag, Star, Bookmark, Image, Video, Music, Camera, Eye, PenTool, Palette, Maximize, Minimize,
   Stethoscope, Syringe, FlaskConical, Dna, ShieldAlert, Flame,
-  Construction, HardHat, Drill, PlugZap, PencilRuler, ThermometerSnowflake, Droplets, Cylinder, Key, ScanSearch, Lock, EyeOff, UserCog, UserCheck, BadgeCheck, GraduationCap, Award, Megaphone, Radio, Mic, Cast, Inbox, ShieldCheck, ShieldX, Fingerprint, Siren, Cctv, ScanFace, FileKey, Book, Library, School, Brain, Lightbulb, Presentation, TriangleAlert, FireExtinguisher, Biohazard, Radiation, Glasses, Ear, CheckCircle, Medal, Ribbon, ThumbsUp, Microscope, Scale, ScrollText, Stamp, Gauge, Info
+  Construction, HardHat, Drill, PlugZap, PencilRuler, ThermometerSnowflake, Droplets, Cylinder, Key, ScanSearch, Lock, EyeOff, UserCog, UserCheck, BadgeCheck, GraduationCap, Award, Megaphone, Radio, Mic, Cast, Inbox, ShieldCheck, ShieldX, Fingerprint, Siren, Cctv, ScanFace, FileKey, Book, Library, School, Brain, Lightbulb, Presentation, TriangleAlert, FireExtinguisher, Biohazard, Radiation, Glasses, Ear, CheckCircle, Medal, Ribbon, ThumbsUp, Microscope, Scale, ScrollText, Stamp, Gauge, Info, Upload
 };
 
 interface IconRendererProps {
