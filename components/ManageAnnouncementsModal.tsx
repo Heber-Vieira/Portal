@@ -4,6 +4,7 @@ import { IconRenderer } from './IconRenderer';
 import { supabase } from '../supabase';
 import { Announcement } from '../types';
 import { LATEST_VERSION, SystemVersion } from '../constants/changelog';
+import { FeatureAnnouncementModal } from './FeatureAnnouncementModal';
 
 interface ManageAnnouncementsModalProps {
     isOpen: boolean;
@@ -20,6 +21,8 @@ export const ManageAnnouncementsModal: React.FC<ManageAnnouncementsModalProps> =
     const [isActive, setIsActive] = useState(true);
     const [version, setVersion] = useState('');
     const [pendingUpdate, setPendingUpdate] = useState<SystemVersion | null>(null);
+    const [showPreview, setShowPreview] = useState(false);
+    const [previewData, setPreviewData] = useState<Announcement | null>(null);
 
     // Check for updates on mount
     useEffect(() => {
@@ -126,13 +129,33 @@ export const ManageAnnouncementsModal: React.FC<ManageAnnouncementsModalProps> =
                                     O código fonte contém novas features não publicadas.
                                 </p>
                             </div>
-                            <button
-                                type="button"
-                                onClick={handleImportUpdate}
-                                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg transition-colors shadow-lg active:scale-95"
-                            >
-                                Importar Dados
-                            </button>
+                            <div className="flex gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setPreviewData({
+                                            id: 'preview-auto',
+                                            title: pendingUpdate.title,
+                                            description: pendingUpdate.description,
+                                            features: pendingUpdate.features as any,
+                                            display_duration: 7,
+                                            is_active: true,
+                                            created_at: new Date().toISOString()
+                                        });
+                                        setShowPreview(true);
+                                    }}
+                                    className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all border ${isDarkMode ? 'border-blue-500/30 text-blue-400 hover:bg-blue-500/10' : 'border-blue-200 text-blue-600 hover:bg-blue-50'}`}
+                                >
+                                    Ver Prévia
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleImportUpdate}
+                                    className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg transition-colors shadow-lg active:scale-95"
+                                >
+                                    Importar Dados
+                                </button>
+                            </div>
                         </div>
                     )}
                     <div className="grid grid-cols-2 gap-4">
@@ -258,11 +281,37 @@ export const ManageAnnouncementsModal: React.FC<ManageAnnouncementsModalProps> =
                     </div>
                 </form>
 
-                <div className="p-6 border-t border-slate-500/10 flex justify-end gap-3">
-                    <button onClick={onClose} className="px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-slate-500 hover:bg-slate-100 transition-colors">Cancelar</button>
+                <div className="p-6 border-t border-slate-500/10 flex justify-end gap-3 shrink-0">
+                    <button type="button" onClick={onClose} className="px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-slate-500 hover:bg-slate-100 transition-colors">Cancelar</button>
+                    <button
+                        type="button"
+                        onClick={() => setShowPreview(true)}
+                        className={`px-6 py-3 rounded-xl border text-xs font-bold uppercase tracking-widest transition-all ${isDarkMode ? 'border-slate-700 text-slate-400 hover:bg-slate-800' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                    >
+                        Visualizar
+                    </button>
                     <button onClick={handleSubmit} className="px-8 py-3 rounded-xl bg-primary text-white text-xs font-black uppercase tracking-widest shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all">Publicar Anúncio</button>
                 </div>
             </div>
+
+            {showPreview && (
+                <FeatureAnnouncementModal
+                    announcement={previewData || {
+                        id: 'preview',
+                        title: title || 'Título do Anúncio',
+                        description: description || 'Sua descrição aparecerá aqui.',
+                        features: features.length > 0 ? (features as any) : [{ title: 'Título da Feature', description: 'Descrição da funcionalidade', icon: 'Star' }],
+                        display_duration: displayDuration,
+                        is_active: isActive,
+                        created_at: new Date().toISOString()
+                    }}
+                    onClose={() => {
+                        setShowPreview(false);
+                        setPreviewData(null);
+                    }}
+                    isDarkMode={isDarkMode}
+                />
+            )}
         </div>
     );
 };

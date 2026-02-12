@@ -20,6 +20,10 @@ export const FeatureAnnouncementModal: React.FC<FeatureAnnouncementModalProps> =
     }, []);
 
     const handleConfirm = async () => {
+        if (announcement.id.startsWith('preview')) {
+            onClose();
+            return;
+        }
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
             await supabase.from('announcement_views').upsert({
