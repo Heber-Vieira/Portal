@@ -197,15 +197,26 @@ const App: React.FC = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfilePopover, setShowProfilePopover] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [messageModal, setMessageModal] = useState<{ isOpen: boolean, title: string, message: string, type?: 'warning' | 'info' | 'error' }>({
+  const [messageModal, setMessageModal] = useState<{ isOpen: boolean, title: string, message: string, type?: 'warning' | 'info' | 'error', notificationId?: string }>({
     isOpen: false,
     title: '',
     message: '',
     type: 'warning'
   });
 
-  const showMessage = (message: string, title: string = 'Atenção', type: 'warning' | 'info' | 'error' = 'warning') => {
-    setMessageModal({ isOpen: true, title, message, type });
+  const [confirmModal, setConfirmModal] = useState<{ isOpen: boolean, title: string, message: string, onConfirm: () => void }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => { }
+  });
+
+  const showConfirm = (title: string, message: string, onConfirm: () => void) => {
+    setConfirmModal({ isOpen: true, title, message, onConfirm });
+  };
+
+  const showMessage = (message: string, title: string = 'Atenção', type: 'warning' | 'info' | 'error' = 'warning', notificationId?: string) => {
+    setMessageModal({ isOpen: true, title, message, type, notificationId });
   };
 
   const [usageData, setUsageData] = useState<UsageData[]>([]);
@@ -235,12 +246,27 @@ const App: React.FC = () => {
     document.documentElement.style.setProperty('--primary-color-hover', primaryColor + 'ee');
   }, [isDarkMode, currentUser.primaryColor]);
 
-  const handleClearNotifications = async () => {
+  const handleClearNotifications = () => {
     if (!session?.user || notifications.length === 0) return;
-    const reads = notifications.map(n => ({ user_id: session.user.id, notification_id: n.id }));
-    const { error } = await supabase.from('notification_reads').upsert(reads);
+
+    showConfirm('Limpar Notificações', 'Tem certeza que deseja limpar todas as notificações?', async () => {
+      const reads = notifications.map(n => ({ user_id: session.user.id, notification_id: n.id }));
+      const { error } = await supabase.from('notification_reads').upsert(reads);
+      if (!error) {
+        setNotifications([]);
+      }
+      setConfirmModal(prev => ({ ...prev, isOpen: false }));
+    });
+  };
+
+  const handleClearSingleNotification = async (id: string) => {
+    if (!session?.user) return;
+    const { error } = await supabase.from('notification_reads').upsert({ user_id: session.user.id, notification_id: id });
     if (!error) {
-      setNotifications([]);
+      setNotifications(prev => prev.filter(n => n.id !== id));
+      // Close modal logic is handled by calling onClose or just hiding.
+      // showMessage Modal is controlled by messageModal state.
+      setMessageModal(prev => ({ ...prev, isOpen: false }));
     }
   };
 
@@ -698,7 +724,7 @@ const App: React.FC = () => {
         setShowSettingsModal={setShowSettingsModal}
         onLogoClick={() => { setShowStats(false); setSelectedCategory('Tudo'); }}
         onShowSendNotification={() => setShowSendNotificationModal(true)}
-        onNotificationClick={(n) => showMessage(n.message, n.title, n.type === 'alert' ? 'warning' : 'info')}
+        onNotificationClick={(n) => showMessage(n.message, n.title, n.type === 'alert' ? 'warning' : 'info', n.id)}
         onClearNotifications={handleClearNotifications}
       />
 
@@ -800,12 +826,23 @@ const App: React.FC = () => {
       <ManageUsersModal isOpen={showManageUsersModal} onClose={() => setShowManageUsersModal(false)} users={users} apps={links} onAdd={handleAddUser} onUpdate={handleUpdateUser} onRemove={(id) => setDeletingItem({ id, type: 'user' })} currentUserId={currentUser.id} onShowMessage={showMessage} />
       <ConfirmModal isOpen={!!deletingItem} onClose={() => setDeletingItem(null)} onConfirm={confirmDelete} title="Excluir" message={deletingItem?.type === 'saas' ? "Remover este ativo permanentemente?" : deletingItem?.type === 'category' ? `Remover a categoria "${deletingItem?.id}"? Os sistemas serão movidos para "Outros".` : "Remover este usuário permanentemente?"} />
       <HelpCenter isOpen={showHelpCenter} onClose={() => setShowHelpCenter(false)} isDarkMode={isDarkMode} links={links} />
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+      />
       <MessageModal
         isOpen={messageModal.isOpen}
-        onClose={() => setMessageModal(prev => ({ ...prev, isOpen: false }))}
         title={messageModal.title}
         message={messageModal.message}
         type={messageModal.type}
+        onClose={() => setMessageModal({ ...messageModal, isOpen: false })}
+        onClear={messageModal.notificationId ? () => showConfirm('Limpar Mensagem', 'Esta mensagem será removida permanentemente. Confirmar?', () => {
+          handleClearSingleNotification(messageModal.notificationId!);
+          setConfirmModal(prev => ({ ...prev, isOpen: false }));
+        }) : undefined}
       />
       <ProfileModal isOpen={showProfileModal} onClose={() => setShowProfileModal(false)} currentUser={currentUser} onUpdateUser={handleUpdateUser} onShowMessage={showMessage} />
       <SettingsModal

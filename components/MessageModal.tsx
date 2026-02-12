@@ -8,9 +8,10 @@ interface MessageModalProps {
     title: string;
     message: string;
     type?: 'warning' | 'info' | 'error';
+    onClear?: () => void;
 }
 
-export const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose, title, message, type = 'warning' }) => {
+export const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose, title, message, type = 'warning', onClear }) => {
     if (!isOpen) return null;
 
     const getColors = () => {
@@ -39,12 +40,22 @@ export const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose, tit
                 </div>
                 <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight uppercase">{title}</h3>
                 <p className="text-slate-500 font-medium leading-relaxed mb-10 px-4 whitespace-pre-wrap">{message}</p>
-                <button
-                    onClick={onClose}
-                    className={`w-full px-6 py-5 ${colors.btn} text-white font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl transition-all shadow-xl active:scale-95`}
-                >
-                    Entendi
-                </button>
+                <div className="flex flex-col gap-2 w-full">
+                    <button
+                        onClick={onClose}
+                        className={`w-full px-6 py-5 ${colors.btn} text-white font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl transition-all shadow-xl active:scale-95`}
+                    >
+                        Entendi
+                    </button>
+                    {onClear && (
+                        <button
+                            onClick={() => { onClear(); onClose(); }}
+                            className="w-full px-6 py-3 text-slate-400 hover:text-slate-600 font-bold text-[10px] uppercase tracking-[0.2em] transition-colors"
+                        >
+                            Limpar esta mensagem
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );
