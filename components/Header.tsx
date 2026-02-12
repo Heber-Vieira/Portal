@@ -28,6 +28,7 @@ interface HeaderProps {
     onLogoClick: () => void;
     onShowSendNotification: () => void;
     onNotificationClick: (notification: any) => void;
+    onClearNotifications: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -53,7 +54,8 @@ export const Header: React.FC<HeaderProps> = ({
     setShowSettingsModal,
     onLogoClick,
     onShowSendNotification,
-    onNotificationClick
+    onNotificationClick,
+    onClearNotifications
 }) => {
     return (
         <header className={`sticky top-0 z-40 border-b backdrop-blur-md transition-colors duration-300 ${isDarkMode ? 'bg-[#0f172a]/80 border-white/5' : 'bg-white/70 border-slate-100'}`}>
@@ -113,7 +115,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <button onClick={() => setShowProfilePopover(!showProfilePopover)} className="w-7 h-7 rounded bg-white text-slate-900 flex items-center justify-center font-black text-[8px] border border-slate-200 overflow-hidden shadow-sm">
                         <img src={currentUser.avatarUrl} className="w-full h-full object-cover" alt="" />
                     </button>
-                    <NotificationPopover isOpen={showNotifications} notifications={notifications} onClear={() => setNotifications([])} onClose={() => setShowNotifications(false)} isDarkMode={isDarkMode} onSelect={onNotificationClick} />
+                    <NotificationPopover isOpen={showNotifications} notifications={notifications} onClear={onClearNotifications} onClose={() => setShowNotifications(false)} isDarkMode={isDarkMode} onSelect={onNotificationClick} />
                     <ProfilePopover
                         isOpen={showProfilePopover}
                         onClose={() => setShowProfilePopover(false)}

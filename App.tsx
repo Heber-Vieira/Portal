@@ -146,9 +146,16 @@ const App: React.FC = () => {
         isVisibleToUsers: l.is_visible_to_users
       })));
 
-      const { data: notifs } = await supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(10);
+      const { data: notifs } = await supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(20);
+      const { data: reads } = await supabase.from('notification_reads').select('notification_id').eq('user_id', userId);
+
       if (notifs) {
-        setNotifications(notifs.map((n: any) => ({ ...n, time: new Date(n.created_at).toLocaleDateString() })));
+        let unread = notifs;
+        if (reads && reads.length > 0) {
+          const readSet = new Set(reads.map(r => r.notification_id));
+          unread = notifs.filter(n => !readSet.has(n.id));
+        }
+        setNotifications(unread.map((n: any) => ({ ...n, time: new Date(n.created_at).toLocaleDateString() })));
       }
     };
 
@@ -227,6 +234,15 @@ const App: React.FC = () => {
     // Generate sub-colors (hover states, etc)
     document.documentElement.style.setProperty('--primary-color-hover', primaryColor + 'ee');
   }, [isDarkMode, currentUser.primaryColor]);
+
+  const handleClearNotifications = async () => {
+    if (!session?.user || notifications.length === 0) return;
+    const reads = notifications.map(n => ({ user_id: session.user.id, notification_id: n.id }));
+    const { error } = await supabase.from('notification_reads').upsert(reads);
+    if (!error) {
+      setNotifications([]);
+    }
+  };
 
   const handleTogglePin = async (id: string) => {
     const link = links.find(l => l.id === id);
@@ -683,6 +699,7 @@ const App: React.FC = () => {
         onLogoClick={() => { setShowStats(false); setSelectedCategory('Tudo'); }}
         onShowSendNotification={() => setShowSendNotificationModal(true)}
         onNotificationClick={(n) => showMessage(n.message, n.title, n.type === 'alert' ? 'warning' : 'info')}
+        onClearNotifications={handleClearNotifications}
       />
 
       <main className="max-w-[1800px] mx-auto px-4 py-6 flex-1 w-full text-inherit">
