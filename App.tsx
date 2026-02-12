@@ -124,6 +124,14 @@ const App: React.FC = () => {
 
       // Carregar Links
       const { data: linkData } = await supabase.from('saas_links').select('*').order('name');
+
+      // Carregar Favoritos do Usuário
+      let favoriteIds = new Set<string>();
+      if (session?.user?.id) {
+        const { data: favs } = await supabase.from('user_favorites').select('link_id').eq('user_id', session.user.id);
+        if (favs) favs.forEach((f: any) => favoriteIds.add(f.link_id));
+      }
+
       if (linkData) setLinks(linkData.map(l => ({
         id: l.id,
         name: l.name,
@@ -132,7 +140,7 @@ const App: React.FC = () => {
         category: l.category_name,
         icon: l.icon as any,
         accentColor: l.accent_color,
-        isPinned: l.is_pinned,
+        isPinned: favoriteIds.has(l.id), // User preference
         isActive: l.is_active,
         isVisibleToUsers: l.is_visible_to_users
       })));
@@ -195,12 +203,16 @@ const App: React.FC = () => {
 
   const handleTogglePin = async (id: string) => {
     const link = links.find(l => l.id === id);
-    if (!link) return;
+    if (!link || !session?.user) return;
 
     const newPinState = !link.isPinned;
     setLinks(prev => prev.map(l => l.id === id ? { ...l, isPinned: newPinState } : l));
 
-    await supabase.from('saas_links').update({ is_pinned: newPinState }).eq('id', id);
+    if (newPinState) {
+      await supabase.from('user_favorites').insert({ user_id: session.user.id, link_id: id });
+    } else {
+      await supabase.from('user_favorites').delete().eq('user_id', session.user.id).eq('link_id', id);
+    }
   };
 
   const handleEditSaaS = (saas: SaaSLink) => {
@@ -233,7 +245,7 @@ const App: React.FC = () => {
       category_name: saas.category,
       icon: saas.icon,
       accent_color: saas.accentColor,
-      is_pinned: saas.isPinned,
+      // is_pinned removed from global sync
       is_active: saas.isActive,
       is_visible_to_users: saas.isVisibleToUsers
     };
