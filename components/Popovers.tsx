@@ -8,8 +8,9 @@ export const NotificationPopover: React.FC<{
     notifications: any[];
     onClear: () => void;
     onClose: () => void;
-    isDarkMode?: boolean
-}> = ({ isOpen, notifications, onClear, onClose, isDarkMode }) => {
+    isDarkMode?: boolean;
+    onSelect?: (notification: any) => void;
+}> = ({ isOpen, notifications, onClear, onClose, isDarkMode, onSelect }) => {
     if (!isOpen) return null;
     return (
         <div className={`absolute top-14 right-0 w-80 border shadow-2xl rounded-[2.5rem] z-[50] overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right ${isDarkMode ? 'bg-[#1e293b] border-white/10 text-white' : 'bg-white border-slate-100 text-slate-900'}`}>
@@ -22,11 +23,12 @@ export const NotificationPopover: React.FC<{
             </div>
             <div className="max-h-[350px] overflow-y-auto custom-scrollbar">
                 {notifications.length > 0 ? notifications.map((n: any) => (
-                    <div key={n.id} className="p-6 hover:bg-slate-500/5 transition-colors border-b border-slate-500/5 flex gap-4">
+                    <div key={n.id} onClick={() => onSelect && onSelect(n)} className="p-6 hover:bg-slate-500/5 transition-colors border-b border-slate-500/5 flex gap-4 cursor-pointer active:bg-slate-500/10">
                         <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${n.type === 'alert' ? 'bg-red-500' : 'bg-blue-500'}`} />
                         <div className="flex-1">
-                            <p className="text-[13px] font-bold leading-tight">{n.title}</p>
-                            <p className="text-[9px] font-black text-slate-400 mt-2 uppercase tracking-tighter">{n.time}</p>
+                            <p className="text-[13px] font-bold leading-tight line-clamp-2">{n.title}</p>
+                            <p className="text-[10px] text-slate-500 font-medium leading-relaxed mt-1 mb-2 line-clamp-3">{n.message}</p>
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">{n.time}</p>
                         </div>
                     </div>
                 )) : <div className="p-12 text-center opacity-30 text-[10px] font-black uppercase tracking-widest">Sem mensagens</div>}

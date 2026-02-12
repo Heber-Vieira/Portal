@@ -155,6 +155,28 @@ const App: React.FC = () => {
     fetchAllData();
   }, [session]);
 
+  useEffect(() => {
+    if (!session?.user) return;
+
+    const channel = supabase
+      .channel('public:notifications')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'notifications' },
+        (payload) => {
+          const newNotif = payload.new as any;
+          if (newNotif.is_global || newNotif.target_user_id === session.user.id) {
+            setNotifications(prev => [{ ...newNotif, time: new Date(newNotif.created_at).toLocaleDateString() }, ...prev]);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [session]);
+
   const [showAddEditModal, setShowAddEditModal] = useState(false);
   const [editingSaaS, setEditingSaaS] = useState<SaaSLink | null>(null);
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
@@ -660,6 +682,7 @@ const App: React.FC = () => {
         setShowSettingsModal={setShowSettingsModal}
         onLogoClick={() => { setShowStats(false); setSelectedCategory('Tudo'); }}
         onShowSendNotification={() => setShowSendNotificationModal(true)}
+        onNotificationClick={(n) => showMessage(n.message, n.title, n.type === 'alert' ? 'warning' : 'info')}
       />
 
       <main className="max-w-[1800px] mx-auto px-4 py-6 flex-1 w-full text-inherit">
