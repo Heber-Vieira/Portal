@@ -9,7 +9,7 @@ export const translateError = (error: any): string => {
     if (lowerMessage.includes('invalid format') && lowerMessage.includes('email')) {
         return 'O formato do e-mail é inválido.';
     }
-    if (lowerMessage.includes('user already exists')) {
+    if (lowerMessage.includes('user already exists') || lowerMessage.includes('user already registered')) {
         return 'Este usuário já está cadastrado.';
     }
     if (lowerMessage.includes('invalid login credentials')) {
