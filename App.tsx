@@ -669,71 +669,113 @@ const App: React.FC = () => {
 
   // Fetch initial analytics data (last 30 days)
   useEffect(() => {
-    if (!isAdmin || !session) return;
+    if (!isAdmin || !session?.user) return;
 
     const fetchAnalytics = async () => {
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      try {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-      const { data: logs, error } = await supabase
-        .from('usage_logs')
-        .select('created_at, user_id, link_id, profiles(name)')
-        .gte('created_at', thirtyDaysAgo.toISOString());
+        // Fetch logs with profile information
+        const { data: logs, error } = await supabase
+          .from('usage_logs')
+          .select(`
+            created_at, 
+            user_id, 
+            link_id, 
+            profiles:user_id (name, avatar_url)
+          `)
+          .gte('created_at', thirtyDaysAgo.toISOString())
+          .order('created_at', { ascending: false });
 
-      if (error || !logs) return;
-
-      const userMap = new Map<string, UsageData>();
-
-      logs.forEach(log => {
-        const userId = log.user_id;
-        const linkId = log.link_id;
-        const date = new Date(log.created_at);
-        const dateStr = date.toISOString().split('T')[0];
-        const profileData = log.profiles as any;
-        const userName = (Array.isArray(profileData) ? profileData[0]?.name : profileData?.name) || 'Usuário Desconhecido';
-        const linkName = links.find(l => l.id === linkId)?.name || 'Sistema';
-
-        if (!userMap.has(userId)) {
-          userMap.set(userId, {
-            userId,
-            userName,
-            totalAccesses: 0,
-            lastAccess: date,
-            topSystemId: '',
-            systemBreakdown: [],
-            history: []
-          });
+        if (error) {
+          console.error('Error fetching analytics:', error);
+          return;
         }
 
-        const userStat = userMap.get(userId)!;
-        userStat.totalAccesses++;
-        if (date > userStat.lastAccess) userStat.lastAccess = date;
-
-        // Update system stats
-        let sysStat = userStat.systemBreakdown.find(s => s.systemId === linkId);
-        if (!sysStat) {
-          sysStat = { systemId: linkId, systemName: linkName, totalClicks: 0, lastAccess: date, history: [] };
-          userStat.systemBreakdown.push(sysStat);
+        if (!logs || logs.length === 0) {
+          setUsageData([]);
+          return;
         }
-        sysStat.totalClicks++;
-        if (date > sysStat.lastAccess) sysStat.lastAccess = date;
-        sysStat.history.push(date);
 
-        // Update history
-        let historyPoint = userStat.history.find(h => h.date === dateStr);
-        if (!historyPoint) {
-          historyPoint = { date: dateStr, count: 0 };
-          userStat.history.push(historyPoint);
-        }
-        historyPoint.count++;
-      });
+        const userMap = new Map<string, UsageData>();
 
-      // Sort history dates
-      userMap.forEach(user => {
-        user.history.sort((a, b) => a.date.localeCompare(b.date));
-      });
+        logs.forEach(log => {
+          const userId = log.user_id;
+          const linkId = log.link_id;
+          if (!userId || !linkId) return;
 
-      setUsageData(Array.from(userMap.values()));
+          const date = new Date(log.created_at);
+          const dateStr = date.toISOString().split('T')[0];
+
+          // PostgREST returns the joined object under the alias or table name
+          const profileData = log.profiles as any;
+          const profile = Array.isArray(profileData) ? profileData[0] : profileData;
+          const userName = profile?.name || 'Usuário Desconhecido';
+          const avatarUrl = profile?.avatar_url;
+
+          const link = links.find(l => l.id === linkId);
+          const linkName = link?.name || 'Sistema';
+
+          if (!userMap.has(userId)) {
+            userMap.set(userId, {
+              userId,
+              userName,
+              avatarUrl,
+              totalAccesses: 0,
+              lastAccess: date,
+              topSystemId: '',
+              systemBreakdown: [],
+              history: []
+            });
+          }
+
+          const userStat = userMap.get(userId)!;
+          userStat.totalAccesses++;
+          if (date > userStat.lastAccess) {
+            userStat.lastAccess = date;
+          }
+
+          // Update system stats
+          let sysStat = userStat.systemBreakdown.find(s => s.systemId === linkId);
+          if (!sysStat) {
+            sysStat = {
+              systemId: linkId,
+              systemName: linkName,
+              totalClicks: 0,
+              lastAccess: date,
+              history: []
+            };
+            userStat.systemBreakdown.push(sysStat);
+          }
+          sysStat.totalClicks++;
+          if (date > sysStat.lastAccess) {
+            sysStat.lastAccess = date;
+          }
+          sysStat.history.push(date);
+
+          // Update history
+          let historyPoint = userStat.history.find(h => h.date === dateStr);
+          if (!historyPoint) {
+            historyPoint = { date: dateStr, count: 0 };
+            userStat.history.push(historyPoint);
+          }
+          historyPoint.count++;
+        });
+
+        // Finalize stats (sorting and top systems)
+        userMap.forEach(user => {
+          user.history.sort((a, b) => a.date.localeCompare(b.date));
+          user.systemBreakdown.sort((a, b) => b.totalClicks - a.totalClicks);
+          if (user.systemBreakdown.length > 0) {
+            user.topSystemId = user.systemBreakdown[0].systemId;
+          }
+        });
+
+        setUsageData(Array.from(userMap.values()).sort((a, b) => b.totalAccesses - a.totalAccesses));
+      } catch (err) {
+        console.error('Critical error in analytics:', err);
+      }
     };
 
     fetchAnalytics();

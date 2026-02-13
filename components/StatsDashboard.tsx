@@ -179,9 +179,11 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ data, totalSyste
         {/* Card 4: Top User Mini */}
         <div className="bg-slate-50/50 rounded-3xl p-6 border border-slate-100 hover:shadow-md transition-all duration-300">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-xl p-0.5 border border-slate-200 flex items-center justify-center bg-white">
-              {mostActiveUser ? (
-                <img src={`https://i.pravatar.cc/150?u=${mostActiveUser.userId}`} className="w-10 h-10 rounded-lg object-cover" alt="" />
+            <div className="w-12 h-12 rounded-xl p-0.5 border border-slate-200 flex items-center justify-center bg-white overflow-hidden">
+              {mostActiveUser?.avatarUrl ? (
+                <img src={mostActiveUser.avatarUrl} className="w-full h-full rounded-lg object-cover" alt="" />
+              ) : mostActiveUser ? (
+                <img src={`https://i.pravatar.cc/150?u=${mostActiveUser.userId}`} className="w-full h-full rounded-lg object-cover opacity-50 grayscale" alt="" />
               ) : (
                 <IconRenderer name="User" className="w-5 h-5 text-slate-300" />
               )}
@@ -199,7 +201,7 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ data, totalSyste
         {/* Most Accessed Systems */}
         <div className="bg-slate-50/50 rounded-3xl p-6 border border-slate-100">
           <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center">
-            <IconRenderer name="BarChart2" className="w-3.5 h-3.5 mr-2" />
+            <IconRenderer name="BarChart3" className="w-3.5 h-3.5 mr-2" />
             Sistemas Mais Acessados
           </h3>
           <div className="space-y-4">
@@ -268,8 +270,12 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ data, totalSyste
                   </div>
 
                   <div className="relative">
-                    <div className="w-10 h-10 rounded-xl overflow-hidden mr-4 ring-2 ring-transparent group-hover:ring-orange-100 transition-all">
-                      <img src={`https://i.pravatar.cc/150?u=${stat.userId}`} className="w-full h-full object-cover" alt="" />
+                    <div className="w-10 h-10 rounded-xl overflow-hidden mr-4 ring-2 ring-transparent group-hover:ring-orange-100 transition-all bg-slate-100 flex items-center justify-center">
+                      {stat.avatarUrl ? (
+                        <img src={stat.avatarUrl} className="w-full h-full object-cover" alt="" />
+                      ) : (
+                        <IconRenderer name="User" className="w-5 h-5 text-slate-300" />
+                      )}
                     </div>
                   </div>
 
@@ -325,9 +331,16 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ data, totalSyste
                                 </div>
                               </div>
                               <div className="h-6 w-full opacity-60">
-                                {renderSparkline(sys.history.map(d => ({ date: d instanceof Date ? d.toISOString() : d, count: 1 })).reduce((acc: any[], curr) => {
+                                {renderSparkline(sys.history.reduce((acc: any[], curr) => {
+                                  const dateStr = (curr instanceof Date ? curr : new Date(curr)).toISOString().split('T')[0];
+                                  const existing = acc.find(h => h.date === dateStr);
+                                  if (existing) {
+                                    existing.count++;
+                                  } else {
+                                    acc.push({ date: dateStr, count: 1 });
+                                  }
                                   return acc;
-                                }, []))}
+                                }, []).sort((a, b) => a.date.localeCompare(b.date)))}
                               </div>
                             </div>
                           ))}
@@ -341,8 +354,9 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ data, totalSyste
               </div>
             ))
           ) : (
-            <div className="text-center flex flex-col items-center justify-center opacity-50">
-              <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Nenhuma atividade registrada hoje</p>
+            <div className="text-center flex flex-col items-center justify-center opacity-50 py-10">
+              <IconRenderer name="Activity" className="w-8 h-8 text-slate-300 mb-2" />
+              <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Nenhuma atividade registrada no período</p>
             </div>
           )}
         </div>

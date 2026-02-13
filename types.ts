@@ -61,6 +61,7 @@ export interface SystemUsageStats {
 export interface UsageData {
   userId: string;
   userName: string;
+  avatarUrl?: string;
   totalAccesses: number;
   lastAccess: Date;
   topSystemId: string;
