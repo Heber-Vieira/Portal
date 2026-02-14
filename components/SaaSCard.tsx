@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { SaaSLink } from '../types.ts';
 import { IconRenderer } from './IconRenderer.tsx';
 
@@ -15,9 +14,34 @@ interface SaaSCardProps {
 }
 
 export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin, onEdit, onAccess, isAdmin, isDense, isDarkMode }) => {
+    const cardRef = useRef<HTMLDivElement>(null);
+    const [origin, setOrigin] = useState('center center');
+
+    const handleMouseEnter = () => {
+        if (!cardRef.current) return;
+        const rect = cardRef.current.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        let horizontal = 'center';
+        let vertical = 'center';
+
+        // Detecção de bordas horizontais
+        if (rect.left < viewportWidth * 0.2) horizontal = 'left';
+        else if (rect.right > viewportWidth * 0.8) horizontal = 'right';
+
+        // Detecção de bordas verticais
+        if (rect.top < viewportHeight * 0.2) vertical = 'top';
+        else if (rect.bottom > viewportHeight * 0.8) vertical = 'bottom';
+
+        setOrigin(`${horizontal} ${vertical}`);
+    };
+
     return (
         <div
-            className={`group relative border transition-all duration-500 ease-out flex flex-col h-full rounded-xl overflow-hidden transform-gpu hover:scale-[2.0] hover:-translate-y-1 hover:z-50 ${isDense ? 'p-2' : 'p-4'
+            ref={cardRef}
+            onMouseEnter={handleMouseEnter}
+            className={`group relative border transition-all duration-500 ease-out flex flex-col h-full rounded-xl overflow-hidden transform-gpu will-change-transform hover:scale-[2.0] hover:-translate-y-1 hover:z-50 ${isDense ? 'p-2' : 'p-4'
                 } ${isDarkMode
                     ? 'bg-white/5 border-white/5 hover:bg-[#1e293b] hover:border-white/20 hover:shadow-2xl hover:shadow-primary/40'
                     : 'bg-white border-slate-100 hover:bg-white hover:shadow-2xl hover:shadow-slate-400/50'
@@ -25,6 +49,7 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
                     ? (isDarkMode ? 'ring-1 border-primary ring-primary' : 'ring-1 border-primary ring-primary shadow-sm bg-slate-50/20')
                     : ''
                 }`}
+            style={{ backfaceVisibility: 'hidden', transformOrigin: origin }}
         >
             {/* Cabeçalho do Card: Alinhamento Horizontal (Logo | Texto+Admin | Pin) */}
             <div className={`flex items-start justify-between ${isDense ? 'mb-2' : 'mb-4'}`}>

@@ -870,7 +870,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 flex flex-col ${isDarkMode ? 'bg-[#0f172a] text-white' : 'bg-[#fcfdfe] text-[#0f172a]'}`}>
+    <div className={`min-h-screen transition-colors duration-300 flex flex-col overflow-x-hidden ${isDarkMode ? 'bg-[#0f172a] text-white' : 'bg-[#fcfdfe] text-[#0f172a]'}`}>
       <Header
         isDarkMode={isDarkMode}
         activeTab={activeTab}
@@ -974,9 +974,12 @@ const App: React.FC = () => {
             </div>
 
             {filteredLinks.length > 0 ? (
-              <div className="flex flex-wrap justify-center gap-3 animate-in fade-in duration-300">
+              <div className={`grid gap-4 animate-in fade-in duration-300 w-full ${isDenseGrid
+                ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'
+                : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'
+                }`}>
                 {filteredLinks.map(saas => (
-                  <div key={saas.id} className={`transition-all duration-300 ${isDenseGrid ? 'w-full sm:w-[220px] lg:w-[240px]' : 'w-full sm:w-[320px] lg:w-[350px]'}`}>
+                  <div key={saas.id} className="w-full">
                     <SaaSCard
                       saas={saas}
                       onDelete={(id) => setDeletingItem({ id, type: 'saas' })}
