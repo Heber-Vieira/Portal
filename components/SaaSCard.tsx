@@ -17,10 +17,10 @@ interface SaaSCardProps {
 export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin, onEdit, onAccess, isAdmin, isDense, isDarkMode }) => {
     return (
         <div
-            className={`group relative border transition-all duration-300 flex flex-col h-full rounded-xl overflow-hidden ${isDense ? 'p-2' : 'p-4'
+            className={`group relative border transition-all duration-500 ease-out flex flex-col h-full rounded-xl overflow-hidden transform-gpu hover:scale-[2.0] hover:-translate-y-1 hover:z-50 ${isDense ? 'p-2' : 'p-4'
                 } ${isDarkMode
-                    ? 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10'
-                    : 'bg-white border-slate-100 hover:shadow-xl hover:shadow-slate-200/50'
+                    ? 'bg-white/5 border-white/5 hover:bg-[#1e293b] hover:border-white/20 hover:shadow-2xl hover:shadow-primary/40'
+                    : 'bg-white border-slate-100 hover:bg-white hover:shadow-2xl hover:shadow-slate-400/50'
                 } ${saas.isPinned
                     ? (isDarkMode ? 'ring-1 border-primary ring-primary' : 'ring-1 border-primary ring-primary shadow-sm bg-slate-50/20')
                     : ''
@@ -31,8 +31,8 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
                 <div className="flex items-start space-x-3 flex-1 min-w-0">
                     {/* Logo do Sistema */}
                     <div
-                        className={`shrink-0 rounded flex items-center justify-center overflow-hidden transition-all duration-300 mt-0.5 ${isDense ? 'w-7 h-7' : 'w-10 h-10'
-                            } ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-100'} border shadow-sm group-hover:scale-110`}
+                        className={`shrink-0 rounded flex items-center justify-center overflow-hidden transition-all duration-500 mt-0.5 ${isDense ? 'w-7 h-7' : 'w-10 h-10'
+                            } ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-100'} border shadow-sm group-hover:scale-110 group-hover:rotate-6`}
                         style={{ color: saas.accentColor }}
                     >
                         {saas.imageUrl ? (
@@ -48,7 +48,7 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
                             {saas.category}
                         </span>
                         <div className="flex items-center flex-wrap gap-2">
-                            <h3 className={`font-black leading-tight break-words ${isDense ? 'text-[9px]' : 'text-[11px]'} ${isDarkMode ? 'text-white' : 'text-[#0f172a]'}`}>
+                            <h3 className={`font-black leading-tight break-words transition-all duration-500 group-hover:text-primary ${isDense ? 'text-[9px]' : 'text-[11px]'} ${isDarkMode ? 'text-white' : 'text-[#0f172a]'}`}>
                                 {saas.name}
                             </h3>
 
@@ -111,10 +111,10 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => onAccess(saas.id)}
-                        className={`w-full text-white rounded-lg font-black text-[9px] uppercase tracking-widest flex items-center justify-center space-x-2 transition-all hover:opacity-90 active:scale-95 shadow-lg bg-primary ${isDense ? 'py-1.5' : 'py-2.5'}`}
+                        className={`w-full text-white rounded-lg font-black text-[9px] uppercase tracking-widest flex items-center justify-center space-x-2 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-primary/30 hover:opacity-90 active:scale-95 shadow-lg bg-primary ${isDense ? 'py-1.5' : 'py-2.5'}`}
                     >
                         <span>Acessar</span>
-                        <IconRenderer name="ExternalLink" className="w-2.5 h-2.5 opacity-60" />
+                        <IconRenderer name="ExternalLink" className="w-2.5 h-2.5 opacity-60 group-hover:translate-x-1 transition-transform" />
                     </a>
                 ) : (
                     <div className={`w-full bg-slate-500/10 text-slate-500 rounded-lg text-[8px] font-black uppercase tracking-widest flex items-center justify-center space-x-2 cursor-not-allowed border border-slate-500/5 ${isDense ? 'py-1.5' : 'py-2.5'}`}>
