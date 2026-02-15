@@ -52,6 +52,23 @@ const App: React.FC = () => {
   const [hoverScale, setHoverScale] = useState(1.05); // Default subtle zoom
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
+  // Debounced update for slider values to avoid too many DB calls
+  useEffect(() => {
+    if (!session?.user) return;
+    const timer = setTimeout(() => {
+      supabase.from('profiles').update({ zoom_level: zoomLevel }).eq('id', session.user.id).then();
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [zoomLevel, session]);
+
+  useEffect(() => {
+    if (!session?.user) return;
+    const timer = setTimeout(() => {
+      supabase.from('profiles').update({ hover_scale: hoverScale }).eq('id', session.user.id).then();
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [hoverScale, session]);
+
   // Mapear usuário do Supabase para o modelo interno
   const [currentUser, setCurrentUser] = useState<User>({
     id: '',
@@ -112,9 +129,9 @@ const App: React.FC = () => {
         };
         setCurrentUser(userObj);
         if (profile.is_dark_mode !== undefined) setIsDarkMode(profile.is_dark_mode);
-        // Map is_dense_grid to zoomLevel for backward compatibility if needed, or just ignore.
-        // For now, let's default to 3 (standard) or attempt to read a new profile field if we added it.
-        // We'll stick to a default since we aren't migrating DB yet.
+        if (profile.is_dark_mode !== undefined) setIsDarkMode(profile.is_dark_mode);
+        if (profile.zoom_level !== undefined && profile.zoom_level !== null) setZoomLevel(profile.zoom_level);
+        if (profile.hover_scale !== undefined && profile.hover_scale !== null) setHoverScale(profile.hover_scale);
         if (profile.notifications_enabled !== undefined) setNotificationsEnabled(profile.notifications_enabled);
 
         // Se for admin, carregar todos os usuários
