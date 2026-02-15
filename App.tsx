@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 import { SaaSLink, User, Category, UsageData } from './types';
@@ -29,6 +29,7 @@ import { ActionBar } from './components/ActionBar';
 import { Login } from './components/Login';
 
 const App: React.FC = () => {
+  const lastCheckedUserId = useRef<string | null>(null);
   const [session, setSession] = useState<any>(null);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [links, setLinks] = useState<SaaSLink[]>(INITIAL_SAAS_LINKS);
@@ -200,30 +201,35 @@ const App: React.FC = () => {
       }
 
       // Check for active announcements
-      const now = new Date();
-      const { data: activeAnnouncements } = await supabase.from('announcements').select('*').eq('is_active', true);
-      const { data: myViews } = await supabase.from('announcement_views').select('*').eq('user_id', userId);
-      const viewMap = new Map((myViews || []).map(v => [v.announcement_id, v.viewed_at]));
+      // Check for active announcements
+      // Prevent re-checking on window focus/tab switch by ensuring we only check once per user session
+      if (lastCheckedUserId.current !== userId) {
+        const now = new Date();
+        const { data: activeAnnouncements } = await supabase.from('announcements').select('*').eq('is_active', true);
+        const { data: myViews } = await supabase.from('announcement_views').select('*').eq('user_id', userId);
+        const viewMap = new Map((myViews || []).map(v => [v.announcement_id, v.viewed_at]));
 
-      for (const ann of activeAnnouncements || []) {
-        const lastViewedAt = viewMap.get(ann.id);
-        const unexpiredFeatures = (ann.features || []).filter((f: any) => {
-          const createdAt = new Date(f.created_at || ann.created_at || now);
-          const expiryDate = new Date(createdAt);
-          expiryDate.setDate(expiryDate.getDate() + (ann.display_duration || 7));
-          return expiryDate > now;
-        });
-
-        if (unexpiredFeatures.length > 0) {
-          const hasNewItems = unexpiredFeatures.some((f: any) => {
-            if (!lastViewedAt) return true;
-            return new Date(f.created_at || ann.created_at || now) > new Date(lastViewedAt);
+        for (const ann of activeAnnouncements || []) {
+          const lastViewedAt = viewMap.get(ann.id);
+          const unexpiredFeatures = (ann.features || []).filter((f: any) => {
+            const createdAt = new Date(f.created_at || ann.created_at || now);
+            const expiryDate = new Date(createdAt);
+            expiryDate.setDate(expiryDate.getDate() + (ann.display_duration || 7));
+            return expiryDate > now;
           });
-          if (hasNewItems) {
-            setActiveAnnouncement({ ...ann, features: unexpiredFeatures });
-            break;
+
+          if (unexpiredFeatures.length > 0) {
+            const hasNewItems = unexpiredFeatures.some((f: any) => {
+              if (!lastViewedAt) return true;
+              return new Date(f.created_at || ann.created_at || now) > new Date(lastViewedAt);
+            });
+            if (hasNewItems) {
+              setActiveAnnouncement({ ...ann, features: unexpiredFeatures });
+              break;
+            }
           }
         }
+        lastCheckedUserId.current = userId;
       }
     };
 
