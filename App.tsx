@@ -48,7 +48,8 @@ const App: React.FC = () => {
 
   // Settings States
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isDenseGrid, setIsDenseGrid] = useState(true);
+  const [zoomLevel, setZoomLevel] = useState(3);
+  const [hoverScale, setHoverScale] = useState(1.05); // Default subtle zoom
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   // Mapear usuário do Supabase para o modelo interno
@@ -111,7 +112,9 @@ const App: React.FC = () => {
         };
         setCurrentUser(userObj);
         if (profile.is_dark_mode !== undefined) setIsDarkMode(profile.is_dark_mode);
-        if (profile.is_dense_grid !== undefined) setIsDenseGrid(profile.is_dense_grid);
+        // Map is_dense_grid to zoomLevel for backward compatibility if needed, or just ignore.
+        // For now, let's default to 3 (standard) or attempt to read a new profile field if we added it.
+        // We'll stick to a default since we aren't migrating DB yet.
         if (profile.notifications_enabled !== undefined) setNotificationsEnabled(profile.notifications_enabled);
 
         // Se for admin, carregar todos os usuários
@@ -266,7 +269,7 @@ const App: React.FC = () => {
     };
   }, [session, notificationsEnabled]);
 
-  const toggleSetting = async (key: 'is_dark_mode' | 'is_dense_grid' | 'notifications_enabled', value: boolean, setter: (v: boolean) => void) => {
+  const toggleSetting = async (key: 'is_dark_mode' | 'notifications_enabled', value: boolean, setter: (v: boolean) => void) => {
     setter(value);
     if (session?.user) {
       await supabase.from('profiles').update({ [key]: value }).eq('id', session.user.id);
@@ -898,6 +901,10 @@ const App: React.FC = () => {
         onClearNotifications={handleClearNotifications}
         systemLogo={systemLogo}
         onShowAdminSettings={() => setShowAdminSettingsModal(true)}
+        zoomLevel={zoomLevel}
+        setZoomLevel={setZoomLevel}
+        hoverScale={hoverScale}
+        setHoverScale={setHoverScale}
       />
 
       <AdminSettingsModal
@@ -974,9 +981,11 @@ const App: React.FC = () => {
             </div>
 
             {filteredLinks.length > 0 ? (
-              <div className={`grid gap-4 animate-in fade-in duration-300 w-full ${isDenseGrid
-                ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'
-                : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'
+              <div className={`grid gap-4 animate-in fade-in duration-300 w-full ${zoomLevel === 1 ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8' :
+                zoomLevel === 2 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6' :
+                  zoomLevel === 3 ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' :
+                    zoomLevel === 4 ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' :
+                      'grid-cols-1 md:grid-cols-2'
                 }`}>
                 {filteredLinks.map(saas => (
                   <div key={saas.id} className="w-full">
@@ -987,8 +996,10 @@ const App: React.FC = () => {
                       onEdit={handleEditSaaS}
                       onAccess={handleTrackAccess}
                       isAdmin={isAdmin}
-                      isDense={isDenseGrid}
+                      isDense={zoomLevel <= 2}
                       isDarkMode={isDarkMode}
+                      zoomLevel={zoomLevel}
+                      hoverScale={hoverScale}
                     />
                   </div>
                 ))}
@@ -1057,8 +1068,6 @@ const App: React.FC = () => {
         onClose={() => setShowSettingsModal(false)}
         isDarkMode={isDarkMode}
         setIsDarkMode={(v) => toggleSetting('is_dark_mode', v, setIsDarkMode)}
-        isDenseGrid={isDenseGrid}
-        setIsDenseGrid={(v) => toggleSetting('is_dense_grid', v, setIsDenseGrid)}
         notificationsEnabled={notificationsEnabled}
         setNotificationsEnabled={(v) => toggleSetting('notifications_enabled', v, setNotificationsEnabled)}
       />

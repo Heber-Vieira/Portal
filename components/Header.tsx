@@ -2,7 +2,7 @@
 import React from 'react';
 import { IconRenderer } from './IconRenderer';
 import { User } from '../types';
-import { NotificationPopover, ProfilePopover } from './Popovers';
+import { NotificationPopover, ProfilePopover, DisplaySettingsPopover } from './Popovers';
 
 interface HeaderProps {
     isDarkMode: boolean;
@@ -30,8 +30,10 @@ interface HeaderProps {
     onNotificationClick: (notification: any) => void;
     onClearNotifications: () => void;
     systemLogo?: string;
-    onShowAdminSettings?: () => void;
-
+    zoomLevel?: number;
+    setZoomLevel?: (level: number) => void;
+    hoverScale?: number;
+    setHoverScale?: (scale: number) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -60,9 +62,14 @@ export const Header: React.FC<HeaderProps> = ({
     onNotificationClick,
     onClearNotifications,
     systemLogo,
-    onShowAdminSettings
-
+    onShowAdminSettings,
+    zoomLevel,
+    setZoomLevel,
+    hoverScale,
+    setHoverScale
 }) => {
+    const [showDisplaySettings, setShowDisplaySettings] = React.useState(false);
+
     return (
         <header className={`sticky top-0 z-40 border-b backdrop-blur-md transition-colors duration-300 ${isDarkMode ? 'bg-[#0f172a]/80 border-white/5' : 'bg-white/70 border-slate-100'}`}>
             <div className="max-w-[1800px] mx-auto px-4 h-12 flex items-center justify-between gap-4">
@@ -99,6 +106,8 @@ export const Header: React.FC<HeaderProps> = ({
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
+
+
                 </div>
 
                 <div className="flex items-center space-x-1">
@@ -128,6 +137,26 @@ export const Header: React.FC<HeaderProps> = ({
 
                         </>
                     )}
+                    {setZoomLevel && (
+                        <div className="relative">
+                            <button
+                                onClick={() => setShowDisplaySettings(!showDisplaySettings)}
+                                className={`p-1.5 rounded transition-colors ${showDisplaySettings ? 'text-blue-500 bg-blue-500/10' : 'text-slate-400 hover:text-blue-500'}`}
+                                title="Ajustes de Visualização"
+                            >
+                                <IconRenderer name="Monitor" className="w-3.5 h-3.5" />
+                            </button>
+                            <DisplaySettingsPopover
+                                isOpen={showDisplaySettings}
+                                onClose={() => setShowDisplaySettings(false)}
+                                isDarkMode={isDarkMode}
+                                zoomLevel={zoomLevel || 3}
+                                setZoomLevel={setZoomLevel || (() => { })}
+                                hoverScale={hoverScale || 1.05}
+                                setHoverScale={setHoverScale || (() => { })}
+                            />
+                        </div>
+                    )}
                     <button onClick={() => setShowNotifications(!showNotifications)} className="p-1.5 text-slate-400 hover:text-slate-300 relative">
                         <IconRenderer name="Bell" className="w-3.5 h-3.5" />
                         {notificationsEnabled && notifications.length > 0 && <span className="absolute top-1.5 right-1.5 w-1 h-1 bg-red-500 rounded-full shadow-sm shadow-red-500/50"></span>}
@@ -147,6 +176,6 @@ export const Header: React.FC<HeaderProps> = ({
                     />
                 </div>
             </div>
-        </header>
+        </header >
     );
 };

@@ -73,3 +73,95 @@ export const ProfilePopover: React.FC<{
         </div>
     );
 };
+
+export const DisplaySettingsPopover: React.FC<{
+    isOpen: boolean;
+    onClose: () => void;
+    isDarkMode: boolean;
+    zoomLevel: number;
+    setZoomLevel: (level: number) => void;
+    hoverScale: number;
+    setHoverScale: (scale: number) => void;
+}> = ({ isOpen, onClose, isDarkMode, zoomLevel, setZoomLevel, hoverScale, setHoverScale }) => {
+    if (!isOpen) return null;
+
+    const formattedHoverScale = Math.round(((hoverScale || 1.05) - 1) * 100);
+
+    return (
+        <div className={`absolute top-14 right-20 w-72 border shadow-2xl rounded-[2rem] z-[50] overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right ${isDarkMode ? 'bg-[#1e293b] border-white/10 text-white' : 'bg-white border-slate-100 text-slate-900'}`}>
+            <div className="p-5 border-b border-slate-500/10 flex justify-between items-center bg-slate-500/5">
+                <div className="flex items-center space-x-2">
+                    <IconRenderer name="Monitor" className="w-4 h-4 text-blue-500" />
+                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em]">Visualização</h3>
+                </div>
+                <button onClick={onClose} className="p-1.5 hover:bg-slate-500/10 rounded-full transition-colors active:scale-90 opacity-60 hover:opacity-100">
+                    <IconRenderer name="X" className="w-3.5 h-3.5" />
+                </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+                {/* Grid Zoom Control */}
+                <div className="space-y-3">
+                    <div className="flex justify-between items-end">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Tamanho dos Cards</label>
+                        <span className="text-[10px] font-bold bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded-full">Nível {zoomLevel || 3}</span>
+                    </div>
+                    <div className="relative h-2 rounded-full bg-slate-500/10">
+                        <div
+                            className="absolute h-full bg-blue-500 rounded-full transition-all duration-300"
+                            style={{ width: `${((zoomLevel || 3) - 1) * 25}%` }}
+                        />
+                        <input
+                            type="range"
+                            min="1"
+                            max="5"
+                            step="1"
+                            value={zoomLevel || 3}
+                            onChange={(e) => setZoomLevel(Number(e.target.value))}
+                            className="absolute w-full h-full opacity-0 cursor-pointer"
+                        />
+                        <div
+                            className={`absolute w-4 h-4 rounded-full shadow-sm top-1/2 -translate-y-1/2 -ml-2 bg-white border-2 transition-all duration-300 pointer-events-none ${isDarkMode ? 'border-blue-500' : 'border-slate-200'}`}
+                            style={{ left: `${((zoomLevel || 3) - 1) * 25}%` }}
+                        />
+                    </div>
+                    <div className="flex justify-between text-[8px] font-bold text-slate-400 uppercase tracking-wider px-1">
+                        <span>Pequeno</span>
+                        <span>Grande</span>
+                    </div>
+                </div>
+
+                {/* Hover Zoom Control */}
+                <div className="space-y-3 pb-2">
+                    <div className="flex justify-between items-end">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Zoom ao passar o mouse</label>
+                        <span className="text-[10px] font-bold bg-purple-500/10 text-purple-500 px-2 py-0.5 rounded-full">+{formattedHoverScale}%</span>
+                    </div>
+                    <div className="relative h-2 rounded-full bg-slate-500/10">
+                        <div
+                            className="absolute h-full bg-purple-500 rounded-full transition-all duration-300"
+                            style={{ width: `${((hoverScale || 1.05) - 1) * 100}%` }}
+                        />
+                        <input
+                            type="range"
+                            min="1"
+                            max="2"
+                            step="0.05"
+                            value={hoverScale || 1.05}
+                            onChange={(e) => setHoverScale(Number(e.target.value))}
+                            className="absolute w-full h-full opacity-0 cursor-pointer"
+                        />
+                        <div
+                            className={`absolute w-4 h-4 rounded-full shadow-sm top-1/2 -translate-y-1/2 -ml-2 bg-white border-2 transition-all duration-300 pointer-events-none ${isDarkMode ? 'border-purple-500' : 'border-slate-200'}`}
+                            style={{ left: `${((hoverScale || 1.05) - 1) * 100}%` }}
+                        />
+                    </div>
+                    <div className="flex justify-between text-[8px] font-bold text-slate-400 uppercase tracking-wider px-1">
+                        <span>Normal</span>
+                        <span>2x</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};

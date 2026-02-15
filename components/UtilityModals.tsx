@@ -12,11 +12,9 @@ interface ModalProps {
 
 export const SettingsModal: React.FC<ModalProps & {
     setIsDarkMode: (v: boolean) => void;
-    isDenseGrid: boolean;
-    setIsDenseGrid: (v: boolean) => void;
     notificationsEnabled: boolean;
     setNotificationsEnabled: (v: boolean) => void;
-}> = ({ isOpen, onClose, isDarkMode, setIsDarkMode, isDenseGrid, setIsDenseGrid, notificationsEnabled, setNotificationsEnabled }) => {
+}> = ({ isOpen, onClose, isDarkMode, setIsDarkMode, notificationsEnabled, setNotificationsEnabled }) => {
     if (!isOpen) return null;
 
     const Toggle = ({ active, onToggle }: { active: boolean; onToggle: () => void }) => (
@@ -53,13 +51,7 @@ export const SettingsModal: React.FC<ModalProps & {
                         <Toggle active={!!isDarkMode} onToggle={() => setIsDarkMode(!isDarkMode)} />
                     </div>
 
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-xs font-black uppercase">Grid Denso</p>
-                            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Mais ativos na mesma tela</p>
-                        </div>
-                        <Toggle active={isDenseGrid} onToggle={() => setIsDenseGrid(!isDenseGrid)} />
-                    </div>
+
 
                     <div className="flex items-center justify-between">
                         <div>

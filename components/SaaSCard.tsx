@@ -9,11 +9,13 @@ interface SaaSCardProps {
     onEdit: (saas: SaaSLink) => void;
     onAccess: (id: string) => void;
     isAdmin: boolean;
-    isDense?: boolean;
+    isDense?: boolean; // Kept for backward compat or derived logic
     isDarkMode?: boolean;
+    zoomLevel?: number; // 1 to 5
+    hoverScale?: number;
 }
 
-export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin, onEdit, onAccess, isAdmin, isDense, isDarkMode }) => {
+export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin, onEdit, onAccess, isAdmin, isDense, isDarkMode, zoomLevel = 3, hoverScale = 1.05 }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const [origin, setOrigin] = useState('center center');
 
@@ -37,11 +39,54 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
         setOrigin(`${horizontal} ${vertical}`);
     };
 
+    // Calculate dynamic styles based on zoomLevel
+    const getPadding = () => {
+        if (zoomLevel <= 1) return 'p-1.5';
+        if (zoomLevel === 2) return 'p-2';
+        if (zoomLevel === 3) return 'p-3';
+        if (zoomLevel === 4) return 'p-5';
+        return 'p-6';
+    };
+
+    const getIconSize = () => {
+        if (zoomLevel <= 1) return 'w-2.5 h-2.5';
+        if (zoomLevel === 2) return 'w-3 h-3';
+        if (zoomLevel === 3) return 'w-5 h-5';
+        if (zoomLevel === 4) return 'w-6 h-6';
+        return 'w-8 h-8';
+    };
+
+    const getLogoContainerSize = () => {
+        if (zoomLevel <= 1) return 'w-6 h-6';
+        if (zoomLevel === 2) return 'w-7 h-7';
+        if (zoomLevel === 3) return 'w-10 h-10';
+        if (zoomLevel === 4) return 'w-12 h-12';
+        return 'w-16 h-16';
+    };
+
+    const getTitleSize = () => {
+        if (zoomLevel <= 1) return 'text-[8px]';
+        if (zoomLevel === 2) return 'text-[9px]';
+        if (zoomLevel === 3) return 'text-[11px]';
+        if (zoomLevel === 4) return 'text-sm';
+        return 'text-base';
+    };
+
+    const getDescriptionSize = () => {
+        if (zoomLevel <= 1) return 'text-[7px]';
+        if (zoomLevel === 2) return 'text-[8px]';
+        if (zoomLevel === 3) return 'text-[10px]';
+        if (zoomLevel === 4) return 'text-xs';
+        return 'text-sm';
+    };
+
+    const paddingClass = getPadding();
+
     return (
         <div
             ref={cardRef}
             onMouseEnter={handleMouseEnter}
-            className={`group relative border transition-all duration-500 ease-out flex flex-col h-full rounded-xl overflow-hidden transform-gpu will-change-transform hover:scale-[2.0] hover:-translate-y-1 hover:z-50 ${isDense ? 'p-2' : 'p-4'
+            className={`group relative border transition-all duration-500 ease-out flex flex-col h-full rounded-xl overflow-hidden transform-gpu will-change-transform hover:scale-[var(--hover-scale)] hover:-translate-y-1 hover:z-20 ${paddingClass
                 } ${isDarkMode
                     ? 'bg-white/5 border-white/5 hover:bg-[#1e293b] hover:border-white/20 hover:shadow-2xl hover:shadow-primary/40'
                     : 'bg-white border-slate-100 hover:bg-white hover:shadow-2xl hover:shadow-slate-400/50'
@@ -49,31 +94,31 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
                     ? (isDarkMode ? 'ring-1 border-primary ring-primary' : 'ring-1 border-primary ring-primary shadow-sm bg-slate-50/20')
                     : ''
                 }`}
-            style={{ backfaceVisibility: 'hidden', transformOrigin: origin }}
+            style={{ backfaceVisibility: 'hidden', transformOrigin: origin, '--hover-scale': hoverScale } as React.CSSProperties}
         >
             {/* Cabeçalho do Card: Alinhamento Horizontal (Logo | Texto+Admin | Pin) */}
-            <div className={`flex items-start justify-between ${isDense ? 'mb-2' : 'mb-4'}`}>
+            <div className={`flex items-start justify-between ${zoomLevel <= 2 ? 'mb-2' : 'mb-4'}`}>
                 <div className="flex items-start space-x-3 flex-1 min-w-0">
                     {/* Logo do Sistema */}
                     <div
-                        className={`shrink-0 rounded flex items-center justify-center overflow-hidden transition-all duration-500 mt-0.5 ${isDense ? 'w-7 h-7' : 'w-10 h-10'
+                        className={`shrink-0 rounded flex items-center justify-center overflow-hidden transition-all duration-500 mt-0.5 ${getLogoContainerSize()
                             } ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-100'} border shadow-sm group-hover:scale-110 group-hover:rotate-6`}
                         style={{ color: saas.accentColor }}
                     >
                         {saas.imageUrl ? (
                             <img src={saas.imageUrl} alt="" className="w-full h-full object-cover" />
                         ) : (
-                            <IconRenderer name={saas.icon} className={isDense ? 'w-3 h-3' : 'w-5 h-5'} />
+                            <IconRenderer name={saas.icon} className={getIconSize()} />
                         )}
                     </div>
 
                     {/* Nome, Categoria e Ferramentas Admin */}
                     <div className="flex-1 min-w-0 pr-2">
-                        <span className={`block font-black uppercase tracking-widest text-slate-400 leading-none ${isDense ? 'text-[6px] mb-1' : 'text-[7px] mb-1.5'}`}>
+                        <span className={`block font-black uppercase tracking-widest text-slate-400 leading-none ${zoomLevel <= 2 ? 'text-[6px] mb-1' : 'text-[7px] mb-1.5'}`}>
                             {saas.category}
                         </span>
                         <div className="flex items-center flex-wrap gap-2">
-                            <h3 className={`font-black leading-tight break-words transition-all duration-500 group-hover:text-primary ${isDense ? 'text-[9px]' : 'text-[11px]'} ${isDarkMode ? 'text-white' : 'text-[#0f172a]'}`}>
+                            <h3 className={`font-black leading-tight break-words transition-all duration-500 group-hover:text-primary ${getTitleSize()} ${isDarkMode ? 'text-white' : 'text-[#0f172a]'}`}>
                                 {saas.name}
                             </h3>
 
@@ -97,19 +142,19 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
                 <div className="shrink-0">
                     <button
                         onClick={() => onTogglePin(saas.id)}
-                        className={`p-2.5 rounded-2xl transition-all shadow-sm ${saas.isPinned
+                        className={`transition-all shadow-sm ${zoomLevel <= 2 ? 'p-1.5 rounded-lg' : 'p-2.5 rounded-2xl'} ${saas.isPinned
                             ? 'bg-white text-pink-500 border border-slate-100 shadow-lg'
                             : 'text-slate-400 opacity-0 group-hover:opacity-100 hover:text-white hover:bg-[#334155] bg-white border border-slate-100'
                             }`}
                     >
-                        <IconRenderer name="Pin" className={`w-4 h-4 ${saas.isPinned ? 'fill-current' : ''}`} />
+                        <IconRenderer name="Pin" className={`${zoomLevel <= 2 ? 'w-3 h-3' : 'w-4 h-4'} ${saas.isPinned ? 'fill-current' : ''}`} />
                     </button>
                 </div>
             </div>
 
             {/* Descrição Flexível */}
-            <div className={`flex-1 ${isDense ? 'mb-2' : 'mb-4'}`}>
-                <p className={`text-slate-400 font-medium leading-tight ${isDense ? 'text-[8px]' : 'text-[10px]'}`}>
+            <div className={`flex-1 ${zoomLevel <= 2 ? 'mb-2' : 'mb-4'}`}>
+                <p className={`text-slate-400 font-medium leading-tight ${getDescriptionSize()}`}>
                     {saas.description}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-2">
@@ -136,13 +181,13 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => onAccess(saas.id)}
-                        className={`w-full text-white rounded-lg font-black text-[9px] uppercase tracking-widest flex items-center justify-center space-x-2 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-primary/30 hover:opacity-90 active:scale-95 shadow-lg bg-primary ${isDense ? 'py-1.5' : 'py-2.5'}`}
+                        className={`w-full text-white rounded-lg font-black uppercase tracking-widest flex items-center justify-center space-x-2 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-primary/30 hover:opacity-90 active:scale-95 shadow-lg bg-primary ${zoomLevel <= 2 ? 'py-1.5 text-[8px]' : 'py-2.5 text-[9px]'}`}
                     >
                         <span>Acessar</span>
-                        <IconRenderer name="ExternalLink" className="w-2.5 h-2.5 opacity-60 group-hover:translate-x-1 transition-transform" />
+                        <IconRenderer name="ExternalLink" className={`${zoomLevel <= 2 ? 'w-2 h-2' : 'w-2.5 h-2.5'} opacity-60 group-hover:translate-x-1 transition-transform`} />
                     </a>
                 ) : (
-                    <div className={`w-full bg-slate-500/10 text-slate-500 rounded-lg text-[8px] font-black uppercase tracking-widest flex items-center justify-center space-x-2 cursor-not-allowed border border-slate-500/5 ${isDense ? 'py-1.5' : 'py-2.5'}`}>
+                    <div className={`w-full bg-slate-500/10 text-slate-500 rounded-lg font-black uppercase tracking-widest flex items-center justify-center space-x-2 cursor-not-allowed border border-slate-500/5 ${zoomLevel <= 2 ? 'py-1.5 text-[7px]' : 'py-2.5 text-[8px]'}`}>
                         <span>Bloqueado</span>
                     </div>
                 )}
@@ -150,3 +195,4 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
         </div>
     );
 };
+
