@@ -48,8 +48,8 @@ const App: React.FC = () => {
 
   // Settings States
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [zoomLevel, setZoomLevel] = useState(3);
-  const [hoverScale, setHoverScale] = useState(1.05); // Default subtle zoom
+  const [zoomLevel, setZoomLevel] = useState(2);
+  const [hoverScale, setHoverScale] = useState(1.40); // Default 40% zoom
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   // Debounced update for slider values to avoid too many DB calls
