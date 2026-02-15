@@ -639,6 +639,9 @@ const App: React.FC = () => {
 
   const handleLogout = async () => {
     setIsLoggedOut(true);
+    // Force reset theme to system defaults immediately
+    document.documentElement.style.setProperty('--primary-color', '#0f172a');
+    document.documentElement.style.setProperty('--primary-color-hover', '#0f172aee');
     await supabase.auth.signOut();
     setTimeout(() => window.location.reload(), 1500);
   };
