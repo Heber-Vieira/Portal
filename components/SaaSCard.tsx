@@ -86,10 +86,10 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
         <div
             ref={cardRef}
             onMouseEnter={handleMouseEnter}
-            className={`group relative border transition-all duration-500 ease-out flex flex-col h-full rounded-xl overflow-hidden transform-gpu will-change-transform hover:scale-[var(--hover-scale)] hover:-translate-y-1 hover:z-20 ${paddingClass
+            className={`group relative border transition-all duration-500 ease-out flex flex-col h-full rounded-xl overflow-hidden transform-gpu will-change-transform [@media(hover:hover)]:hover:scale-[var(--hover-scale)] [@media(hover:hover)]:hover:-translate-y-1 hover:z-20 ${paddingClass
                 } ${isDarkMode
-                    ? 'bg-white/5 border-white/5 hover:bg-[#1e293b] hover:border-white/20 hover:shadow-2xl hover:shadow-primary/40'
-                    : 'bg-white border-slate-100 hover:bg-white hover:shadow-2xl hover:shadow-slate-400/50'
+                    ? 'bg-white/5 border-white/5 [@media(hover:hover)]:hover:bg-[#1e293b] [@media(hover:hover)]:hover:border-white/20 [@media(hover:hover)]:hover:shadow-2xl [@media(hover:hover)]:hover:shadow-primary/40'
+                    : 'bg-white border-slate-100 [@media(hover:hover)]:hover:bg-white [@media(hover:hover)]:hover:shadow-2xl [@media(hover:hover)]:hover:shadow-slate-400/50'
                 } ${saas.isPinned
                     ? (isDarkMode ? 'ring-1 border-primary ring-primary' : 'ring-1 border-primary ring-primary shadow-sm bg-slate-50/20')
                     : ''
