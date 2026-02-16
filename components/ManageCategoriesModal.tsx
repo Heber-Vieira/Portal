@@ -81,7 +81,7 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
           </div>
 
           <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
-            <form onSubmit={handleAdd} className="flex space-x-2 mb-6">
+            <form onSubmit={handleAdd} className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 mb-6">
               <input
                 type="text"
                 placeholder="Nova categoria..."
@@ -91,7 +91,7 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
               />
               <button
                 type="submit"
-                className="bg-primary text-white p-4 rounded-xl hover:opacity-90 transition-all shadow-lg active:scale-95"
+                className="bg-primary text-white p-4 rounded-xl hover:opacity-90 transition-all shadow-lg active:scale-95 flex items-center justify-center sm:block"
               >
                 <IconRenderer name="Plus" className="w-5 h-5" />
               </button>
@@ -164,10 +164,10 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
             </div>
           </div>
 
-          <div className="px-6 py-6 bg-slate-50 border-t border-slate-100 flex gap-3">
+          <div className="px-6 py-6 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-3.5 bg-white border border-slate-200 text-slate-400 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-slate-100 transition-all active:scale-95"
+              className="w-full sm:flex-1 px-4 py-3.5 bg-white border border-slate-200 text-slate-400 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-slate-100 transition-all active:scale-95"
             >
               Cancelar
             </button>
@@ -193,7 +193,7 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
                   }, 800);
                 }
               }}
-              className="flex-[2] px-4 py-3.5 bg-primary text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-xl hover:opacity-90 transition-all shadow-lg active:scale-95 flex items-center justify-center space-x-2"
+              className="w-full sm:flex-[2] px-4 py-3.5 bg-primary text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-xl hover:opacity-90 transition-all shadow-lg active:scale-95 flex items-center justify-center space-x-2"
             >
               {isSaving ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
