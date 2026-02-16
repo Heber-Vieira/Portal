@@ -99,18 +99,24 @@ export const DisplaySettingsPopover: React.FC<{
                 </button>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-8">
                 {/* Grid Zoom Control */}
-                <div className="space-y-3">
+                <div className="space-y-4">
                     <div className="flex justify-between items-end">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Tamanho dos Cards</label>
-                        <span className="text-[10px] font-bold bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded-full">Nível {zoomLevel || 3}</span>
+                        <label className="text-xs sm:text-[10px] font-black uppercase tracking-widest text-slate-400">Tamanho dos Cards</label>
+                        <span className="text-xs sm:text-[10px] font-bold bg-blue-500/10 text-blue-500 px-2.5 py-1 rounded-full">Nível {zoomLevel || 3}</span>
                     </div>
-                    <div className="relative h-2 rounded-full bg-slate-500/10">
-                        <div
-                            className="absolute h-full bg-blue-500 rounded-full transition-all duration-300"
-                            style={{ width: `${((zoomLevel || 3) - 1) * 25}%` }}
-                        />
+                    <div className="relative h-8 flex items-center">
+                        <div className="w-full h-2 rounded-full bg-slate-500/10 relative">
+                            <div
+                                className="absolute h-full bg-blue-500 rounded-full transition-all duration-300"
+                                style={{ width: `${((zoomLevel || 3) - 1) * 25}%` }}
+                            />
+                            <div
+                                className={`absolute w-5 h-5 rounded-full shadow-lg top-1/2 -translate-y-1/2 -ml-2.5 bg-white border-2 transition-all duration-300 pointer-events-none ${isDarkMode ? 'border-blue-500' : 'border-slate-200'}`}
+                                style={{ left: `${((zoomLevel || 3) - 1) * 25}%` }}
+                            />
+                        </div>
                         <input
                             type="range"
                             min="1"
@@ -118,30 +124,32 @@ export const DisplaySettingsPopover: React.FC<{
                             step="1"
                             value={zoomLevel || 3}
                             onChange={(e) => setZoomLevel(Number(e.target.value))}
-                            className="absolute w-full h-full opacity-0 cursor-pointer"
-                        />
-                        <div
-                            className={`absolute w-4 h-4 rounded-full shadow-sm top-1/2 -translate-y-1/2 -ml-2 bg-white border-2 transition-all duration-300 pointer-events-none ${isDarkMode ? 'border-blue-500' : 'border-slate-200'}`}
-                            style={{ left: `${((zoomLevel || 3) - 1) * 25}%` }}
+                            className="absolute w-full h-full opacity-0 cursor-pointer z-10"
                         />
                     </div>
-                    <div className="flex justify-between text-[8px] font-bold text-slate-400 uppercase tracking-wider px-1">
+                    <div className="flex justify-between text-[10px] sm:text-[8px] font-bold text-slate-400 uppercase tracking-wider px-1">
                         <span>Pequeno</span>
                         <span>Grande</span>
                     </div>
                 </div>
 
                 {/* Hover Zoom Control */}
-                <div className="space-y-3 pb-2">
+                <div className="space-y-4 pb-2">
                     <div className="flex justify-between items-end">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Zoom ao passar o mouse</label>
-                        <span className="text-[10px] font-bold bg-purple-500/10 text-purple-500 px-2 py-0.5 rounded-full">+{formattedHoverScale}%</span>
+                        <label className="text-xs sm:text-[10px] font-black uppercase tracking-widest text-slate-400">Zoom ao passar o mouse</label>
+                        <span className="text-xs sm:text-[10px] font-bold bg-purple-500/10 text-purple-500 px-2.5 py-1 rounded-full">+{formattedHoverScale}%</span>
                     </div>
-                    <div className="relative h-2 rounded-full bg-slate-500/10">
-                        <div
-                            className="absolute h-full bg-purple-500 rounded-full transition-all duration-300"
-                            style={{ width: `${((hoverScale || 1.05) - 1) * 100}%` }}
-                        />
+                    <div className="relative h-8 flex items-center">
+                        <div className="w-full h-2 rounded-full bg-slate-500/10 relative">
+                            <div
+                                className="absolute h-full bg-purple-500 rounded-full transition-all duration-300"
+                                style={{ width: `${((hoverScale || 1.05) - 1) * 100}%` }}
+                            />
+                            <div
+                                className={`absolute w-5 h-5 rounded-full shadow-lg top-1/2 -translate-y-1/2 -ml-2.5 bg-white border-2 transition-all duration-300 pointer-events-none ${isDarkMode ? 'border-purple-500' : 'border-slate-200'}`}
+                                style={{ left: `${((hoverScale || 1.05) - 1) * 100}%` }}
+                            />
+                        </div>
                         <input
                             type="range"
                             min="1"
@@ -149,14 +157,10 @@ export const DisplaySettingsPopover: React.FC<{
                             step="0.05"
                             value={hoverScale || 1.05}
                             onChange={(e) => setHoverScale(Number(e.target.value))}
-                            className="absolute w-full h-full opacity-0 cursor-pointer"
-                        />
-                        <div
-                            className={`absolute w-4 h-4 rounded-full shadow-sm top-1/2 -translate-y-1/2 -ml-2 bg-white border-2 transition-all duration-300 pointer-events-none ${isDarkMode ? 'border-purple-500' : 'border-slate-200'}`}
-                            style={{ left: `${((hoverScale || 1.05) - 1) * 100}%` }}
+                            className="absolute w-full h-full opacity-0 cursor-pointer z-10"
                         />
                     </div>
-                    <div className="flex justify-between text-[8px] font-bold text-slate-400 uppercase tracking-wider px-1">
+                    <div className="flex justify-between text-[10px] sm:text-[8px] font-bold text-slate-400 uppercase tracking-wider px-1">
                         <span>Normal</span>
                         <span>2x</span>
                     </div>
