@@ -12,8 +12,9 @@ export const NotificationPopover: React.FC<{
     onSelect?: (notification: any) => void;
 }> = ({ isOpen, notifications, onClear, onClose, isDarkMode, onSelect }) => {
     if (!isOpen) return null;
+    if (!isOpen) return null;
     return (
-        <div className={`absolute top-14 right-0 max-sm:-right-4 w-80 max-sm:w-[calc(100vw-2rem)] border shadow-2xl rounded-[2.5rem] z-[50] overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right ${isDarkMode ? 'bg-[#1e293b] border-white/10 text-white' : 'bg-white border-slate-100 text-slate-900'}`}>
+        <div className={`fixed sm:absolute top-20 sm:top-14 left-4 right-4 sm:left-auto sm:right-0 w-auto sm:w-80 border shadow-2xl rounded-[2.5rem] z-[50] overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right ${isDarkMode ? 'bg-[#1e293b] border-white/10 text-white' : 'bg-white border-slate-100 text-slate-900'}`}>
             <div className="p-6 border-b border-slate-500/10 flex justify-between items-center">
                 <h3 className="text-[11px] font-black uppercase tracking-[0.2em]">Notificações</h3>
                 <div className="flex items-center space-x-3">
@@ -47,8 +48,9 @@ export const ProfilePopover: React.FC<{
     isDarkMode?: boolean;
 }> = ({ isOpen, onClose, onOpenProfile, onOpenSettings, onLogout, currentUser, isDarkMode }) => {
     if (!isOpen) return null;
+    if (!isOpen) return null;
     return (
-        <div className={`absolute top-14 right-0 max-sm:-right-4 w-64 max-sm:w-60 border shadow-2xl rounded-[2.5rem] z-[50] overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right ${isDarkMode ? 'bg-[#1e293b] border-white/10 text-white' : 'bg-white border-slate-100 text-slate-900'}`}>
+        <div className={`fixed sm:absolute top-20 sm:top-14 left-4 right-4 sm:left-auto sm:right-0 w-auto sm:w-64 border shadow-2xl rounded-[2.5rem] z-[50] overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right ${isDarkMode ? 'bg-[#1e293b] border-white/10 text-white' : 'bg-white border-slate-100 text-slate-900'}`}>
             <div className="p-6 text-center border-b border-slate-500/10 relative">
                 <button onClick={onClose} className="absolute top-5 right-5 p-1.5 hover:bg-slate-500/10 rounded-full transition-colors"><IconRenderer name="X" className="w-4 h-4 text-slate-400" /></button>
                 <h3 className="text-[14px] font-black uppercase tracking-tight leading-none mb-1">{currentUser.name}</h3>
@@ -88,7 +90,7 @@ export const DisplaySettingsPopover: React.FC<{
     const formattedHoverScale = Math.round(((hoverScale || 1.05) - 1) * 100);
 
     return (
-        <div className={`absolute top-14 right-20 max-sm:right-0 w-72 max-sm:w-[calc(100vw-2rem)] border shadow-2xl rounded-[2rem] z-[50] overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right ${isDarkMode ? 'bg-[#1e293b] border-white/10 text-white' : 'bg-white border-slate-100 text-slate-900'}`}>
+        <div className={`fixed sm:absolute top-20 sm:top-14 left-4 right-4 sm:left-auto sm:right-20 w-auto sm:w-72 border shadow-2xl rounded-[2rem] z-[50] overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right ${isDarkMode ? 'bg-[#1e293b] border-white/10 text-white' : 'bg-white border-slate-100 text-slate-900'}`}>
             <div className="p-5 border-b border-slate-500/10 flex justify-between items-center bg-slate-500/5">
                 <div className="flex items-center space-x-2">
                     <IconRenderer name="Monitor" className="w-4 h-4 text-blue-500" />
