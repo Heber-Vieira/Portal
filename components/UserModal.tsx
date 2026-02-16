@@ -29,6 +29,8 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -237,15 +239,22 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
                     <IconRenderer name="Lock" className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
                     <input
                       required
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
-                      className="w-full px-4 py-3.5 pl-11 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none font-bold text-sm"
+                      className="w-full px-4 py-3.5 pl-11 pr-11 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none font-bold text-sm"
                       value={formData.password}
                       onChange={e => {
                         setFormData({ ...formData, password: e.target.value });
                         if (error) setError(null);
                       }}
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                    >
+                      <IconRenderer name={showPassword ? "EyeOff" : "Eye"} className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
                 <div className="space-y-1.5">
@@ -254,15 +263,22 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
                     <IconRenderer name="Check" className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
                     <input
                       required
-                      type="password"
+                      type={showConfirmPassword ? "text" : "password"}
                       placeholder="••••••••"
-                      className="w-full px-4 py-3.5 pl-11 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none font-bold text-sm"
+                      className="w-full px-4 py-3.5 pl-11 pr-11 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none font-bold text-sm"
                       value={formData.confirmPassword}
                       onChange={e => {
                         setFormData({ ...formData, confirmPassword: e.target.value });
                         if (error) setError(null);
                       }}
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                    >
+                      <IconRenderer name={showConfirmPassword ? "EyeOff" : "Eye"} className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               </div>
