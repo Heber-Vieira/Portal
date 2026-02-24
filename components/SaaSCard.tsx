@@ -80,14 +80,23 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
         return 'text-xs';
     };
 
+    const getCardHeight = () => {
+        if (zoomLevel <= 1) return 'h-[110px]';
+        if (zoomLevel === 2) return 'h-[140px]';
+        if (zoomLevel === 3) return 'h-[180px]';
+        if (zoomLevel === 4) return 'h-[260px]';
+        return 'h-[340px]';
+    };
+
     const paddingClass = getPadding();
+    const cardHeight = getCardHeight();
 
     return (
         <div
             ref={cardRef}
             onMouseEnter={handleMouseEnter}
-            className={`group relative border transition-all duration-500 ease-out flex flex-col h-full rounded-xl overflow-hidden transform-gpu will-change-transform [@media(hover:hover)]:hover:scale-[var(--hover-scale)] [@media(hover:hover)]:hover:-translate-y-1 hover:z-20 ${paddingClass
-                } ${isDarkMode
+            className={`group relative border transition-all duration-500 ease-out flex flex-col rounded-xl overflow-hidden transform-gpu will-change-transform [@media(hover:hover)]:hover:scale-[var(--hover-scale)] [@media(hover:hover)]:hover:-translate-y-1 hover:z-20 ${paddingClass
+                } ${cardHeight} ${isDarkMode
                     ? 'bg-white/5 border-white/5 [@media(hover:hover)]:hover:bg-[#1e293b] [@media(hover:hover)]:hover:border-white/20 [@media(hover:hover)]:hover:shadow-2xl [@media(hover:hover)]:hover:shadow-primary/40'
                     : 'bg-white border-slate-100 [@media(hover:hover)]:hover:bg-white [@media(hover:hover)]:hover:shadow-2xl [@media(hover:hover)]:hover:shadow-slate-400/50'
                 } ${saas.isPinned
@@ -154,7 +163,7 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
 
             {/* Descrição Flexível */}
             <div className={`flex-1 ${zoomLevel <= 2 ? 'mb-0.5' : 'mb-1.5'}`}>
-                <p className={`text-slate-400 font-medium leading-tight ${getDescriptionSize()}`}>
+                <p className={`text-slate-400 font-medium leading-tight ${getDescriptionSize()} line-clamp-3`}>
                     {saas.description}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-2">
@@ -181,10 +190,10 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => onAccess(saas.id)}
-                        className={`w-full text-white rounded-lg font-black uppercase tracking-widest flex items-center justify-center space-x-2 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-primary/30 hover:opacity-90 active:scale-95 shadow-lg bg-primary ${zoomLevel <= 2 ? 'py-0.5 text-[6px]' : 'py-1 text-[7px]'}`}
+                        className={`w-full text-white rounded-xl font-black uppercase tracking-widest flex items-center justify-center space-x-2 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-primary/30 hover:opacity-90 active:scale-95 shadow-lg bg-primary ${zoomLevel <= 2 ? 'py-1.5 text-[8px]' : 'py-3 text-[10px]'}`}
                     >
                         <span>Acessar</span>
-                        <IconRenderer name="ExternalLink" className={`${zoomLevel <= 2 ? 'w-2 h-2' : 'w-2.5 h-2.5'} opacity-60 group-hover:translate-x-1 transition-transform`} />
+                        <IconRenderer name="ExternalLink" className={`${zoomLevel <= 2 ? 'w-2.5 h-2.5' : 'w-4 h-4'} opacity-60 group-hover:translate-x-1 transition-transform`} />
                     </a>
                 ) : (
                     <div className={`w-full bg-slate-500/10 text-slate-500 rounded-lg font-black uppercase tracking-widest flex items-center justify-center space-x-2 cursor-not-allowed border border-slate-500/5 ${zoomLevel <= 2 ? 'py-0.5 text-[5px]' : 'py-1 text-[6px]'}`}>
