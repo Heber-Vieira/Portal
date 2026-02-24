@@ -41,27 +41,27 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
 
     // Calculate dynamic styles based on zoomLevel
     const getPadding = () => {
-        if (zoomLevel <= 1) return 'p-1';
-        if (zoomLevel === 2) return 'p-1.5';
-        if (zoomLevel === 3) return 'p-2.5';
-        if (zoomLevel === 4) return 'p-4';
-        return 'p-5';
+        if (zoomLevel <= 1) return 'px-1.5 py-0.5';
+        if (zoomLevel === 2) return 'px-2 py-1';
+        if (zoomLevel === 3) return 'px-3 py-1.5';
+        if (zoomLevel === 4) return 'px-5 py-2.5';
+        return 'px-6 py-3';
     };
 
     const getIconSize = () => {
-        if (zoomLevel <= 1) return 'w-2 h-2';
-        if (zoomLevel === 2) return 'w-2.5 h-2.5';
-        if (zoomLevel === 3) return 'w-4 h-4';
-        if (zoomLevel === 4) return 'w-5 h-5';
-        return 'w-7 h-7';
+        if (zoomLevel <= 1) return 'w-1.5 h-1.5';
+        if (zoomLevel === 2) return 'w-2 h-2';
+        if (zoomLevel === 3) return 'w-3.5 h-3.5';
+        if (zoomLevel === 4) return 'w-4.5 h-4.5';
+        return 'w-6 h-6';
     };
 
     const getLogoContainerSize = () => {
-        if (zoomLevel <= 1) return 'w-5 h-5';
-        if (zoomLevel === 2) return 'w-6 h-6';
-        if (zoomLevel === 3) return 'w-9 h-9';
-        if (zoomLevel === 4) return 'w-11 h-11';
-        return 'w-14 h-14';
+        if (zoomLevel <= 1) return 'w-4 h-4';
+        if (zoomLevel === 2) return 'w-5 h-5';
+        if (zoomLevel === 3) return 'w-8 h-8';
+        if (zoomLevel === 4) return 'w-10 h-10';
+        return 'w-13 h-13';
     };
 
     const getTitleSize = () => {
@@ -97,7 +97,7 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
             style={{ backfaceVisibility: 'hidden', transformOrigin: origin, '--hover-scale': hoverScale } as React.CSSProperties}
         >
             {/* Cabeçalho do Card: Alinhamento Horizontal (Logo | Texto+Admin | Pin) */}
-            <div className={`flex items-start justify-between ${zoomLevel <= 2 ? 'mb-0.5' : 'mb-2'}`}>
+            <div className={`flex items-start justify-between ${zoomLevel <= 2 ? 'mb-0' : 'mb-1.5'}`}>
                 <div className="flex items-start space-x-3 flex-1 min-w-0">
                     {/* Logo do Sistema */}
                     <div
@@ -124,13 +124,13 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
 
                             {/* Controles de Admin (Pílula Horizontal) */}
                             {isAdmin && (
-                                <div className="flex items-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-[#0f172a] text-white rounded-full px-1 py-0.5 shadow-lg border border-white/10 z-20">
-                                    <button onClick={() => onEdit(saas)} className="p-1 hover:text-blue-400 transition-colors" title="Editar">
-                                        <IconRenderer name="Edit2" className="w-2.5 h-2.5" />
+                                <div className="flex items-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-[#0f172a] text-white rounded-full px-0.5 py-0 shadow-lg border border-white/10 z-20">
+                                    <button onClick={() => onEdit(saas)} className="p-0.5 hover:text-blue-400 transition-colors" title="Editar">
+                                        <IconRenderer name="Edit2" className="w-2 h-2" />
                                     </button>
-                                    <div className="w-px h-2 bg-white/20 mx-0.5" />
-                                    <button onClick={() => onDelete(saas.id)} className="p-1 hover:text-red-400 transition-colors" title="Excluir">
-                                        <IconRenderer name="Trash2" className="w-2.5 h-2.5" />
+                                    <div className="w-px h-1.5 bg-white/20 mx-0.5" />
+                                    <button onClick={() => onDelete(saas.id)} className="p-0.5 hover:text-red-400 transition-colors" title="Excluir">
+                                        <IconRenderer name="Trash2" className="w-2 h-2" />
                                     </button>
                                 </div>
                             )}
@@ -153,7 +153,7 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
             </div>
 
             {/* Descrição Flexível */}
-            <div className={`flex-1 ${zoomLevel <= 2 ? 'mb-1' : 'mb-2'}`}>
+            <div className={`flex-1 ${zoomLevel <= 2 ? 'mb-0.5' : 'mb-1.5'}`}>
                 <p className={`text-slate-400 font-medium leading-tight ${getDescriptionSize()}`}>
                     {saas.description}
                 </p>
@@ -174,20 +174,20 @@ export const SaaSCard: React.FC<SaaSCardProps> = ({ saas, onDelete, onTogglePin,
             </div>
 
             {/* Ação Principal (Base) */}
-            <div className={`border-t ${isDarkMode ? 'border-white/5 pt-1.5' : 'border-slate-100 pt-2'}`}>
+            <div className={`border-t ${isDarkMode ? 'border-white/5 pt-1' : 'border-slate-100 pt-1.5'}`}>
                 {saas.isActive ? (
                     <a
                         href={saas.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => onAccess(saas.id)}
-                        className={`w-full text-white rounded-lg font-black uppercase tracking-widest flex items-center justify-center space-x-2 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-primary/30 hover:opacity-90 active:scale-95 shadow-lg bg-primary ${zoomLevel <= 2 ? 'py-1 text-[6.5px]' : 'py-1.5 text-[7.5px]'}`}
+                        className={`w-full text-white rounded-lg font-black uppercase tracking-widest flex items-center justify-center space-x-2 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-primary/30 hover:opacity-90 active:scale-95 shadow-lg bg-primary ${zoomLevel <= 2 ? 'py-0.5 text-[6px]' : 'py-1 text-[7px]'}`}
                     >
                         <span>Acessar</span>
                         <IconRenderer name="ExternalLink" className={`${zoomLevel <= 2 ? 'w-2 h-2' : 'w-2.5 h-2.5'} opacity-60 group-hover:translate-x-1 transition-transform`} />
                     </a>
                 ) : (
-                    <div className={`w-full bg-slate-500/10 text-slate-500 rounded-lg font-black uppercase tracking-widest flex items-center justify-center space-x-2 cursor-not-allowed border border-slate-500/5 ${zoomLevel <= 2 ? 'py-1 text-[5.5px]' : 'py-1.5 text-[6.5px]'}`}>
+                    <div className={`w-full bg-slate-500/10 text-slate-500 rounded-lg font-black uppercase tracking-widest flex items-center justify-center space-x-2 cursor-not-allowed border border-slate-500/5 ${zoomLevel <= 2 ? 'py-0.5 text-[5px]' : 'py-1 text-[6px]'}`}>
                         <span>Bloqueado</span>
                     </div>
                 )}
