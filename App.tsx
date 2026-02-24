@@ -415,8 +415,15 @@ const App: React.FC = () => {
       setCategories(prev => prev.filter(c => c.name !== categoryToRemove));
       await supabase.from('categories').delete().eq('name', categoryToRemove);
     } else if (deletingItem.type === 'user') {
-      setUsers(prev => prev.filter(u => u.id !== deletingItem.id));
-      await supabase.from('profiles').delete().eq('id', deletingItem.id);
+      const { error } = await supabase.rpc('delete_user_by_admin', {
+        user_id_to_delete: deletingItem.id
+      });
+
+      if (error) {
+        showMessage('Erro ao excluir usuário: ' + error.message, 'Erro', 'error');
+      } else {
+        setUsers(prev => prev.filter(u => u.id !== deletingItem.id));
+      }
     }
     setDeletingItem(null);
   };
@@ -1007,11 +1014,11 @@ const App: React.FC = () => {
             </div>
 
             {filteredLinks.length > 0 ? (
-              <div className={`grid gap-4 animate-in fade-in duration-300 w-full ${zoomLevel === 1 ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8' :
-                zoomLevel === 2 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6' :
-                  zoomLevel === 3 ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' :
-                    zoomLevel === 4 ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' :
-                      'grid-cols-1 md:grid-cols-2'
+              <div className={`grid gap-3 animate-in fade-in duration-300 w-full ${zoomLevel === 1 ? 'grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 2xl:grid-cols-12' :
+                zoomLevel === 2 ? 'grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8' :
+                  zoomLevel === 3 ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6' :
+                    zoomLevel === 4 ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-4' :
+                      'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
                 }`}>
                 {filteredLinks.map(saas => (
                   <div key={saas.id} className="w-full">
