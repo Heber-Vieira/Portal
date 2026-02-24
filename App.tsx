@@ -1014,7 +1014,7 @@ const App: React.FC = () => {
             </div>
 
             {filteredLinks.length > 0 ? (
-              <div className={`grid gap-3 animate-in fade-in duration-300 w-full ${zoomLevel === 1 ? 'grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 2xl:grid-cols-12' :
+              <div className={`grid gap-3 auto-rows-fr animate-in fade-in duration-300 w-full ${zoomLevel === 1 ? 'grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 2xl:grid-cols-12' :
                 zoomLevel === 2 ? 'grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8' :
                   zoomLevel === 3 ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6' :
                     zoomLevel === 4 ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-4' :
