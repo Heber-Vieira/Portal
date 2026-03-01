@@ -363,28 +363,35 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
                 <span>{formData.allowedApps?.length === apps.length ? 'Limpar Todos' : 'Marcar Todos'}</span>
               </button>
             </div>
-            <div className="space-y-2 max-h-48 overflow-y-auto p-1 custom-scrollbar">
-              {apps.map(app => {
-                const isSelected = formData.allowedApps?.includes(app.id);
-                return (
-                  <button
-                    key={app.id}
-                    type="button"
-                    onClick={() => toggleAppPermission(app.id)}
-                    className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${isSelected ? 'bg-blue-50 border-blue-100 shadow-sm' : 'bg-white border-slate-100'}`}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${isSelected ? 'bg-white text-blue-600' : 'bg-slate-50 text-slate-400'}`}>
-                        <IconRenderer name={app.icon} className="w-4 h-4" />
-                      </div>
-                      <span className={`text-[11px] font-bold ${isSelected ? 'text-blue-900' : 'text-slate-600'}`}>{app.name}</span>
-                    </div>
-                    <div className={`w-10 h-6 rounded-full relative transition-all ${isSelected ? 'bg-[#10b981]' : 'bg-slate-200'}`}>
-                      <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all shadow-sm ${isSelected ? 'left-5' : 'left-1'}`}></div>
-                    </div>
-                  </button>
-                );
-              })}
+            <div className="space-y-4 max-h-48 overflow-y-auto p-1 custom-scrollbar">
+              {Array.from(new Set(apps.map(a => a.category))).sort().map(category => (
+                <div key={category} className="space-y-2">
+                  <h4 className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-1 mb-2">{category}</h4>
+                  <div className="space-y-2">
+                    {apps.filter(app => app.category === category).map(app => {
+                      const isSelected = formData.allowedApps?.includes(app.id);
+                      return (
+                        <button
+                          key={app.id}
+                          type="button"
+                          onClick={() => toggleAppPermission(app.id)}
+                          className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${isSelected ? 'bg-blue-50 border-blue-100 shadow-sm' : 'bg-white border-slate-100'}`}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${isSelected ? 'bg-white text-blue-600' : 'bg-slate-50 text-slate-400'}`}>
+                              <IconRenderer name={app.icon as any} className="w-4 h-4" />
+                            </div>
+                            <span className={`text-[11px] font-bold ${isSelected ? 'text-blue-900' : 'text-slate-600'}`}>{app.name}</span>
+                          </div>
+                          <div className={`w-10 h-6 rounded-full relative transition-all ${isSelected ? 'bg-[#10b981]' : 'bg-slate-200'}`}>
+                            <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all shadow-sm ${isSelected ? 'left-5' : 'left-1'}`}></div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </form>
