@@ -78,10 +78,42 @@ export const DocsModal: React.FC<ModalProps> = ({ isOpen, onClose, isDarkMode })
 
     if (!isOpen) return null;
     const docs = [
-        { title: 'Guia de Acesso Remoto', cat: 'Infraestrutura', icon: 'Globe', content: 'Para acessar remotamente, utilize a VPN industrial através do gateway 10.0.0.1. Certifique-se de que seu token MFA está ativo no dispositivo autorizado. Suporte via TI ramal 445.' },
-        { title: 'Protocolos de Segurança v4', cat: 'Compliance', icon: 'Shield', content: 'A política de senhas exige 12 caracteres, incluindo símbolos e números. A troca é obrigatória a cada 90 dias conforme auditoria ISO 27001. Não compartilhe credenciais.' },
-        { title: 'Manuais das Ferramentas BI', cat: 'Operacional', icon: 'BarChart3', content: 'Os dashboards do InsightPanel são atualizados a cada 15 minutos via Data Lake. Em caso de divergência de valores, abra um ticket para a equipe de Controladoria.' },
-        { title: 'Workflow de Aprovações', cat: 'Processos', icon: 'GitBranch', content: 'Toda alteração de processo no FlowMaster BPM deve ser aprovada pelo gerente de planta. As assinaturas digitais são validadas pelo sistema Nexus Signature.' }
+        { 
+            title: 'Navegação e Acesso Rápido', 
+            cat: 'Portal', 
+            icon: 'Compass', 
+            content: 'A tela inicial do NexusPro exibe todos os sistemas aos quais você tem acesso, organizados por categoria. Utilize a barra de "Busca Rápida" no topo para encontrar um aplicativo instantaneamente pelo nome ou categoria. Para acessar um sistema, basta clicar no botão inferior "Acessar" do card correspondente.' 
+        },
+        { 
+            title: 'Gerenciando Favoritos', 
+            cat: 'Personalização', 
+            icon: 'Bookmark', 
+            content: 'Você pode fixar as ferramentas que usa com mais frequência. Clique no ícone de "Tachinha" (Pin) localizado no canto superior direito do card do aplicativo. Os aplicativos fixados aparecerão primeiro na guia "Favoritos" no menu principal superior, permitindo um acesso mais ágil ao seu fluxo de trabalho diário.' 
+        },
+        { 
+            title: 'Ajustes de Visualização', 
+            cat: 'Acessibilidade', 
+            icon: 'Monitor', 
+            content: 'O NexusPro permite customizar a interface para a sua melhor ergonomia. Se você possuir privilégios para esta função, clique no ícone de "Monitor" na barra superior para ajustar o Tamanho dos Cards da tela inicial e a escala de zoom ao passar o mouse. Também possuímos o Modo Escuro no menu de Ajustes.' 
+        },
+        { 
+            title: 'Customizando seu Perfil', 
+            cat: 'Conta', 
+            icon: 'User', 
+            content: 'Acesse suas preferências clicando na sua foto no canto superior direito, depois clique em "Meu Perfil". Ali você poderá alterar sua foto de exibição enviando um novo arquivo do seu computador e ainda selecionar a sua Cor Personalizada, que alterará o tom de destaque de botões chave dentro do painel.' 
+        },
+        { 
+            title: 'Gestão de Usuários (Admin)', 
+            cat: 'Administração', 
+            icon: 'Users', 
+            content: 'Usuários com perfil Administrador podem acessar o "Gerenciador de Usuários" na barra superior. Neste painel é possível Adicionar contas, Autorizar os aplicativos exatos que cada funcionário pode acessar, inativar perfis ou Redefinir rapidamente a senha de acesso da equipe.' 
+        },
+        { 
+            title: 'Analytics Automático (Admin)', 
+            cat: 'Gestão', 
+            icon: 'BarChart3', 
+            content: 'O botão de "Estatísticas" na barra superior abre um poderoso Analytics Operacional em tempo real. Os administradores podem monitorar quais sistemas da empresa estão sendo mais utilizados, consultar o histórico de uso individual e visualizar o ranking com os funcionários mais ativos (Top Performers).' 
+        }
     ];
 
     return (
