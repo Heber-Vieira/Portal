@@ -182,8 +182,6 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ data, totalSyste
             <div className="w-12 h-12 rounded-xl p-0.5 border border-slate-200 flex items-center justify-center bg-white overflow-hidden">
               {mostActiveUser?.avatarUrl ? (
                 <img src={mostActiveUser.avatarUrl} className="w-full h-full rounded-lg object-cover" alt="" />
-              ) : mostActiveUser ? (
-                <img src={`https://i.pravatar.cc/150?u=${mostActiveUser.userId}`} className="w-full h-full rounded-lg object-cover opacity-50 grayscale" alt="" />
               ) : (
                 <IconRenderer name="User" className="w-5 h-5 text-slate-300" />
               )}

@@ -114,7 +114,7 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, i
     const userData: User = {
       ...cleanData as User,
       id: initialData ? initialData.id : Math.random().toString(36).substr(2, 9),
-      avatarUrl: formData.avatarUrl || `https://i.pravatar.cc/150?u=${formData.email || Date.now()}`,
+      avatarUrl: formData.avatarUrl || '',
       primaryColor: formData.primaryColor
     };
     onSave(userData, passwordToSave);

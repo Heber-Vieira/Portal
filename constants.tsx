@@ -72,7 +72,7 @@ export const TEST_USERS: User[] = [
     role: 'Administrador',
     canViewStats: true,
     isActive: true,
-    avatarUrl: 'https://i.pravatar.cc/150?u=admin',
+    avatarUrl: '',
     allowedApps: ['1', '2', '3', '4', '5']
   },
   {
@@ -82,7 +82,7 @@ export const TEST_USERS: User[] = [
     role: 'Usuário',
     canViewStats: false,
     isActive: true,
-    avatarUrl: 'https://i.pravatar.cc/150?u=standard',
+    avatarUrl: '',
     allowedApps: ['1', '2', '3']
   },
   {
@@ -92,7 +92,7 @@ export const TEST_USERS: User[] = [
     role: 'Administrador',
     canViewStats: true,
     isActive: true,
-    avatarUrl: 'https://i.pravatar.cc/150?u=heber',
+    avatarUrl: '',
     allowedApps: ['1', '2', '3', '4', '5']
   }
 ];

@@ -62,8 +62,12 @@ export const ManageUsersModal: React.FC<ManageUsersModalProps> = ({
                 className={`flex items-center justify-between p-4 rounded-[1.5rem] border transition-all ${user.isActive ? 'bg-white border-slate-100 hover:border-slate-300' : 'bg-slate-50 border-slate-100 opacity-60'}`}
               >
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-slate-50 bg-white shrink-0">
-                    <img src={user.avatarUrl} className="w-full h-full object-cover grayscale" alt="" />
+                  <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-slate-50 bg-slate-100 shrink-0 flex items-center justify-center">
+                    {user.avatarUrl ? (
+                      <img src={user.avatarUrl} className="w-full h-full object-cover grayscale" alt="" />
+                    ) : (
+                      <IconRenderer name="User" className="w-6 h-6 text-slate-300" />
+                    )}
                   </div>
                   <div>
                     <h3 className="font-bold text-sm text-[#0f172a]">{user.name} {user.id === currentUserId && <span className="text-[10px] text-blue-500 ml-1">(Você)</span>}</h3>

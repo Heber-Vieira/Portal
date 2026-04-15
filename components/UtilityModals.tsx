@@ -341,8 +341,12 @@ export const ProfileModal: React.FC<{
                 </div>
                 <div className="flex flex-col items-center mb-8">
                     <div className="relative group">
-                        <div className="w-24 h-24 rounded-3xl overflow-hidden border-4 border-white shadow-xl mb-4 relative bg-white flex items-center justify-center">
-                            <img src={currentUser.avatarUrl || `https://i.pravatar.cc/150?u=${currentUser.id}`} className="w-full h-full object-cover" alt="" />
+                        <div className="w-24 h-24 rounded-3xl overflow-hidden border-4 border-white shadow-xl mb-4 relative bg-slate-50 flex items-center justify-center">
+                            {currentUser.avatarUrl ? (
+                                <img src={currentUser.avatarUrl} className="w-full h-full object-cover" alt="" />
+                            ) : (
+                                <IconRenderer name="User" className="w-10 h-10 text-slate-300" />
+                            )}
                             {uploading && (
                                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                                     <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />

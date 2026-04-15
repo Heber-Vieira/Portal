@@ -161,8 +161,17 @@ export const Header: React.FC<HeaderProps> = ({
                         <IconRenderer name="Bell" className="w-3.5 h-3.5" />
                         {notificationsEnabled && notifications.length > 0 && <span className="absolute top-1.5 right-1.5 w-1 h-1 bg-red-500 rounded-full shadow-sm shadow-red-500/50"></span>}
                     </button>
-                    <button onClick={() => setShowProfilePopover(!showProfilePopover)} className="w-7 h-7 rounded bg-white text-slate-900 flex items-center justify-center font-black text-[8px] border border-slate-200 overflow-hidden shadow-sm">
-                        <img src={currentUser.avatarUrl} className="w-full h-full object-cover" alt="" />
+                    <button onClick={() => setShowProfilePopover(!showProfilePopover)} className="flex items-center space-x-2 pl-2 rounded hover:bg-slate-500/5 transition-colors active:scale-95">
+                        <span className={`text-[10px] font-black uppercase tracking-widest hidden sm:block max-w-[120px] truncate ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                            {currentUser.name.split(' ')[0]}
+                        </span>
+                        <div className="w-7 h-7 rounded bg-slate-50 text-slate-900 flex items-center justify-center font-black text-[8px] border border-slate-200 overflow-hidden shadow-sm">
+                            {currentUser.avatarUrl ? (
+                                <img src={currentUser.avatarUrl} className="w-full h-full object-cover" alt="" />
+                            ) : (
+                                <IconRenderer name="User" className="w-4 h-4 text-slate-300" />
+                            )}
+                        </div>
                     </button>
                     <NotificationPopover isOpen={showNotifications} notifications={notifications} onClear={onClearNotifications} onClose={() => setShowNotifications(false)} isDarkMode={isDarkMode} onSelect={onNotificationClick} />
                     <ProfilePopover
