@@ -188,8 +188,25 @@ const App: React.FC = () => {
         isVisibleToUsers: l.is_visible_to_users
       })));
 
-      const { data: notifs } = await supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(20);
-      const { data: reads } = await supabase.from('notification_reads').select('notification_id').eq('user_id', userId);
+      const { data: notifs, error: notifError } = await supabase
+        .from('notifications')
+        .select('*')
+        .or(`is_global.eq.true,target_user_id.eq.${userId}`)
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+      if (notifError) {
+        console.error('Erro ao buscar notificações:', notifError);
+      }
+
+      const { data: reads, error: readsError } = await supabase
+        .from('notification_reads')
+        .select('notification_id')
+        .eq('user_id', userId);
+
+      if (readsError) {
+        console.error('Erro ao buscar notificações lidas:', readsError);
+      }
 
       if (notifs) {
         let unread = notifs;
@@ -367,7 +384,9 @@ const App: React.FC = () => {
     showConfirm('Limpar Notificações', 'Tem certeza que deseja limpar todas as notificações?', async () => {
       const reads = notifications.map(n => ({ user_id: session.user.id, notification_id: n.id }));
       const { error } = await supabase.from('notification_reads').upsert(reads);
-      if (!error) {
+      if (error) {
+        console.error('Erro ao limpar notificações:', error);
+      } else {
         setNotifications([]);
       }
       setConfirmModal(prev => ({ ...prev, isOpen: false }));
@@ -377,7 +396,9 @@ const App: React.FC = () => {
   const handleClearSingleNotification = async (id: string) => {
     if (!session?.user) return;
     const { error } = await supabase.from('notification_reads').upsert({ user_id: session.user.id, notification_id: id });
-    if (!error) {
+    if (error) {
+      console.error('Erro ao limpar notificação individual:', error);
+    } else {
       setNotifications(prev => prev.filter(n => n.id !== id));
       // Close modal logic is handled by calling onClose or just hiding.
       // showMessage Modal is controlled by messageModal state.
